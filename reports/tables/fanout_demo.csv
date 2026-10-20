@@ -1,0 +1,4 @@
+method,rows_after_join,distinct_orders,product_value,payment_value
+source tables,99441,99441,13591643.7,16008872.12
+naive join,118434,99441,14209250.31,20470726.66
+"aggregate first, then join",99441,99441,13591643.7,16008872.12
