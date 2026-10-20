@@ -1,0 +1,38 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/1.5.0/schema.json",
+  "name": "customers_v03",
+  "position": {
+    "x": 688,
+    "y": 92,
+    "z": 3000,
+    "height": 96,
+    "width": 316,
+    "tabOrder": 3000
+  },
+  "visual": {
+    "visualType": "card",
+    "query": {
+      "queryState": {
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Measures"
+                    }
+                  },
+                  "Property": "Repeat Customer Share"
+                }
+              },
+              "queryRef": "Measures.Repeat Customer Share",
+              "nativeQueryRef": "Repeat Customer Share"
+            }
+          ]
+        }
+      }
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

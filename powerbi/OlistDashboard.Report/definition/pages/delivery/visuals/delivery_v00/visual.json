@@ -1,0 +1,48 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/1.5.0/schema.json",
+  "name": "delivery_v00",
+  "position": {
+    "x": 24,
+    "y": 12,
+    "z": 0,
+    "height": 70,
+    "width": 820,
+    "tabOrder": 0
+  },
+  "visual": {
+    "visualType": "textbox",
+    "objects": {
+      "general": [
+        {
+          "properties": {
+            "paragraphs": [
+              {
+                "textRuns": [
+                  {
+                    "value": "Delivery performance & reviews",
+                    "textStyle": {
+                      "fontWeight": "bold",
+                      "fontSize": "20pt"
+                    }
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "Olist public data (Brazil), valid orders, complete months 2017-01 to 2018-08. Values in BRL. Late = delivered after the estimated date.",
+                    "textStyle": {
+                      "fontSize": "10pt",
+                      "color": "#605E5C"
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

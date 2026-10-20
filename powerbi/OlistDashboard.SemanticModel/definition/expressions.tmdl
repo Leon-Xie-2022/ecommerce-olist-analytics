@@ -1,0 +1,3 @@
+expression DataFolder = "C:\Users\Steven\Projects\job-portfolio\ecommerce-olist-analytics\data\processed\powerbi\" meta [IsParameterQuery=true, Type="Text", IsParameterQueryRequired=true]
+
+	annotation PBI_ResultType = Text

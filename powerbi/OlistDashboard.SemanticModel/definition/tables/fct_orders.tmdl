@@ -1,0 +1,127 @@
+table fct_orders
+
+	column order_id
+		dataType: string
+		isHidden
+		summarizeBy: none
+		sourceColumn: order_id
+
+	column customer_unique_id
+		dataType: string
+		isHidden
+		summarizeBy: none
+		sourceColumn: customer_unique_id
+
+	column customer_state
+		dataType: string
+		summarizeBy: none
+		sourceColumn: customer_state
+
+	column order_status
+		dataType: string
+		summarizeBy: none
+		sourceColumn: order_status
+
+	column is_valid
+		dataType: boolean
+		summarizeBy: none
+		sourceColumn: is_valid
+
+	column purchase_date
+		dataType: dateTime
+		formatString: yyyy-mm-dd
+		summarizeBy: none
+		sourceColumn: purchase_date
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column n_items
+		dataType: int64
+		formatString: 0
+		summarizeBy: none
+		sourceColumn: n_items
+
+	column product_value
+		dataType: double
+		formatString: #,0.00
+		summarizeBy: none
+		sourceColumn: product_value
+
+	column freight_value
+		dataType: double
+		formatString: #,0.00
+		summarizeBy: none
+		sourceColumn: freight_value
+
+	column payment_value
+		dataType: double
+		formatString: #,0.00
+		summarizeBy: none
+		sourceColumn: payment_value
+
+	column main_payment_type
+		dataType: string
+		summarizeBy: none
+		sourceColumn: main_payment_type
+
+	column max_installments
+		dataType: int64
+		formatString: 0
+		summarizeBy: none
+		sourceColumn: max_installments
+
+	column is_delivered
+		dataType: boolean
+		summarizeBy: none
+		sourceColumn: is_delivered
+
+	column delivery_days
+		dataType: int64
+		formatString: 0
+		summarizeBy: none
+		sourceColumn: delivery_days
+
+	column promised_days
+		dataType: int64
+		formatString: 0
+		summarizeBy: none
+		sourceColumn: promised_days
+
+	column days_late
+		dataType: int64
+		formatString: 0
+		summarizeBy: none
+		sourceColumn: days_late
+
+	column review_score
+		dataType: int64
+		formatString: 0
+		summarizeBy: none
+		sourceColumn: review_score
+
+	column is_late
+		dataType: boolean
+		summarizeBy: none
+		sourceColumn: is_late
+
+	column delivery_bucket
+		dataType: string
+		summarizeBy: none
+		sourceColumn: delivery_bucket
+
+	column is_return_order
+		dataType: boolean
+		summarizeBy: none
+		sourceColumn: is_return_order
+
+	partition fct_orders = m
+		mode: import
+		source =
+				let
+				    Source = Parquet.Document(File.Contents(DataFolder & "fct_orders.parquet")),
+				    Filtered = Table.SelectRows(Source, each [is_complete_month]),
+				    Selected = Table.SelectColumns(Filtered, {"order_id", "customer_unique_id", "customer_state", "order_status", "is_valid", "purchase_date", "n_items", "product_value", "freight_value", "payment_value", "main_payment_type", "max_installments", "is_delivered", "delivery_days", "promised_days", "days_late", "review_score", "is_late", "delivery_bucket", "is_return_order"}),
+				    Typed = Table.TransformColumnTypes(Selected, {{"order_id", type text}, {"customer_unique_id", type text}, {"customer_state", type text}, {"order_status", type text}, {"is_valid", type logical}, {"purchase_date", type date}, {"n_items", Int64.Type}, {"product_value", type number}, {"freight_value", type number}, {"payment_value", type number}, {"main_payment_type", type text}, {"max_installments", Int64.Type}, {"is_delivered", type logical}, {"delivery_days", Int64.Type}, {"promised_days", Int64.Type}, {"days_late", Int64.Type}, {"review_score", Int64.Type}, {"is_late", type logical}, {"delivery_bucket", type text}, {"is_return_order", type logical}})
+				in
+				    Typed
+

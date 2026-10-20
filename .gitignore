@@ -25,3 +25,7 @@ Thumbs.db
 # Local database files (rebuilt from data/raw by the scripts)
 *.duckdb
 *.duckdb.wal
+
+# Power BI local files (cache.abf holds the imported data)
+**/.pbi/localSettings.json
+**/.pbi/cache.abf

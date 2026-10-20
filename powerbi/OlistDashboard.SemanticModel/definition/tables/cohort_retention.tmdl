@@ -1,0 +1,53 @@
+table cohort_retention
+
+	column cohort
+		dataType: string
+		summarizeBy: none
+		sourceColumn: cohort
+
+	column cohort_size
+		dataType: int64
+		formatString: #,0
+		summarizeBy: none
+		sourceColumn: cohort_size
+
+	column months_observed
+		dataType: int64
+		formatString: 0
+		summarizeBy: none
+		sourceColumn: months_observed
+
+	column repeat_1m_pct
+		dataType: double
+		formatString: 0.00
+		summarizeBy: none
+		sourceColumn: repeat_1m_pct
+
+	column repeat_3m_pct
+		dataType: double
+		formatString: 0.00
+		summarizeBy: none
+		sourceColumn: repeat_3m_pct
+
+	column repeat_6m_pct
+		dataType: double
+		formatString: 0.00
+		summarizeBy: none
+		sourceColumn: repeat_6m_pct
+
+	column repeat_12m_pct
+		dataType: double
+		formatString: 0.00
+		summarizeBy: none
+		sourceColumn: repeat_12m_pct
+
+	partition cohort_retention = m
+		mode: import
+		source =
+				let
+				    Source = Parquet.Document(File.Contents(DataFolder & "cohort_retention.parquet")),
+				    Selected = Table.SelectColumns(Source, {"cohort", "cohort_size", "months_observed", "repeat_1m_pct", "repeat_3m_pct", "repeat_6m_pct", "repeat_12m_pct"}),
+				    Typed = Table.TransformColumnTypes(Selected, {{"cohort", type text}, {"cohort_size", Int64.Type}, {"months_observed", Int64.Type}, {"repeat_1m_pct", type number}, {"repeat_3m_pct", type number}, {"repeat_6m_pct", type number}, {"repeat_12m_pct", type number}})
+				in
+				    Typed
+

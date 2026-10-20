@@ -1,0 +1,38 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/1.5.0/schema.json",
+  "name": "delivery_v05",
+  "position": {
+    "x": 960,
+    "y": 92,
+    "z": 5000,
+    "height": 96,
+    "width": 296,
+    "tabOrder": 5000
+  },
+  "visual": {
+    "visualType": "card",
+    "query": {
+      "queryState": {
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Measures"
+                    }
+                  },
+                  "Property": "Low Review Share"
+                }
+              },
+              "queryRef": "Measures.Low Review Share",
+              "nativeQueryRef": "Low Review Share"
+            }
+          ]
+        }
+      }
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

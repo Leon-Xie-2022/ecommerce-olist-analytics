@@ -1,0 +1,52 @@
+table fct_order_items
+
+	column order_id
+		dataType: string
+		isHidden
+		summarizeBy: none
+		sourceColumn: order_id
+
+	column seller_id
+		dataType: string
+		isHidden
+		summarizeBy: none
+		sourceColumn: seller_id
+
+	column category
+		dataType: string
+		summarizeBy: none
+		sourceColumn: category
+
+	column seller_state
+		dataType: string
+		summarizeBy: none
+		sourceColumn: seller_state
+
+	column is_valid
+		dataType: boolean
+		summarizeBy: none
+		sourceColumn: is_valid
+
+	column price
+		dataType: double
+		formatString: #,0.00
+		summarizeBy: none
+		sourceColumn: price
+
+	column freight_value
+		dataType: double
+		formatString: #,0.00
+		summarizeBy: none
+		sourceColumn: freight_value
+
+	partition fct_order_items = m
+		mode: import
+		source =
+				let
+				    Source = Parquet.Document(File.Contents(DataFolder & "fct_order_items.parquet")),
+				    Filtered = Table.SelectRows(Source, each [is_complete_month]),
+				    Selected = Table.SelectColumns(Filtered, {"order_id", "seller_id", "category", "seller_state", "is_valid", "price", "freight_value"}),
+				    Typed = Table.TransformColumnTypes(Selected, {{"order_id", type text}, {"seller_id", type text}, {"category", type text}, {"seller_state", type text}, {"is_valid", type logical}, {"price", type number}, {"freight_value", type number}})
+				in
+				    Typed
+

@@ -1,0 +1,49 @@
+table dim_customer
+
+	column customer_unique_id
+		dataType: string
+		isHidden
+		summarizeBy: none
+		sourceColumn: customer_unique_id
+
+	column cohort_month
+		dataType: dateTime
+		formatString: yyyy-mm
+		summarizeBy: none
+		sourceColumn: cohort_month
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column n_orders
+		dataType: int64
+		formatString: 0
+		summarizeBy: none
+		sourceColumn: n_orders
+
+	column n_purchase_days
+		dataType: int64
+		formatString: 0
+		summarizeBy: none
+		sourceColumn: n_purchase_days
+
+	column first_order_state
+		dataType: string
+		summarizeBy: none
+		sourceColumn: first_order_state
+
+	column is_repeat_customer
+		dataType: boolean
+		summarizeBy: none
+		sourceColumn: is_repeat_customer
+
+	partition dim_customer = m
+		mode: import
+		source =
+				let
+				    Source = Parquet.Document(File.Contents(DataFolder & "dim_customer.parquet")),
+				    Filtered = Table.SelectRows(Source, each [cohort_month] >= #date(2017, 1, 1) and [cohort_month] <= #date(2018, 8, 1)),
+				    Selected = Table.SelectColumns(Filtered, {"customer_unique_id", "cohort_month", "n_orders", "n_purchase_days", "first_order_state", "is_repeat_customer"}),
+				    Typed = Table.TransformColumnTypes(Selected, {{"customer_unique_id", type text}, {"cohort_month", type date}, {"n_orders", Int64.Type}, {"n_purchase_days", Int64.Type}, {"first_order_state", type text}, {"is_repeat_customer", type logical}})
+				in
+				    Typed
+

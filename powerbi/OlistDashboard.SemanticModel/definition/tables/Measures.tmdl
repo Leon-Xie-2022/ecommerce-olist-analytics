@@ -1,0 +1,102 @@
+table Measures
+
+	/// Orders excluding canceled and unavailable
+	measure 'Valid Orders' = CALCULATE(COUNTROWS(fct_orders), fct_orders[is_valid] = TRUE())
+		formatString: #,0
+
+	/// Sum of item prices of valid orders (BRL); not company revenue
+	measure 'Product Value' = CALCULATE(SUM(fct_orders[product_value]), fct_orders[is_valid] = TRUE())
+		formatString: #,0
+
+	/// Freight charged on valid orders (BRL)
+	measure 'Freight Value' = CALCULATE(SUM(fct_orders[freight_value]), fct_orders[is_valid] = TRUE())
+		formatString: #,0
+
+	/// Average product value per valid order with items (BRL)
+	measure 'AOV' = ```
+			DIVIDE(
+			    [Product Value],
+			    CALCULATE(COUNTROWS(fct_orders), fct_orders[is_valid] = TRUE(), fct_orders[n_items] > 0)
+			)
+			```
+		formatString: #,0.00
+
+	/// Change in product value vs the previous month
+	measure 'Product Value MoM %' = ```
+			VAR CurrentValue = [Product Value]
+			VAR PreviousValue = CALCULATE([Product Value], DATEADD(dim_date[date], -1, MONTH))
+			RETURN
+			    IF(NOT ISBLANK(PreviousValue), DIVIDE(CurrentValue - PreviousValue, PreviousValue))
+			```
+		formatString: 0.0%
+
+	/// Status delivered and a recorded delivery date
+	measure 'Delivered Orders' = CALCULATE(COUNTROWS(fct_orders), fct_orders[is_delivered] = TRUE())
+		formatString: #,0
+
+	/// Delivered after the estimated date (calendar days)
+	measure 'Late Orders' = CALCULATE(COUNTROWS(fct_orders), fct_orders[is_late] = TRUE())
+		formatString: #,0
+
+	/// Late orders / delivered orders
+	measure 'Late Rate' = DIVIDE([Late Orders], [Delivered Orders])
+		formatString: 0.0%
+
+	/// Days from purchase to delivery
+	measure 'Avg Delivery Days' = CALCULATE(AVERAGE(fct_orders[delivery_days]), fct_orders[is_delivered] = TRUE())
+		formatString: 0.0
+
+	/// Average 1-5 review score of valid reviewed orders
+	measure 'Avg Review Score' = CALCULATE(AVERAGE(fct_orders[review_score]), fct_orders[is_valid] = TRUE())
+		formatString: 0.00
+
+	/// Share of 1-2 star reviews among reviewed valid orders
+	measure 'Low Review Share' = ```
+			DIVIDE(
+			    CALCULATE(COUNTROWS(fct_orders), fct_orders[is_valid] = TRUE(), fct_orders[review_score] <= 2),
+			    CALCULATE(COUNT(fct_orders[review_score]), fct_orders[is_valid] = TRUE())
+			)
+			```
+		formatString: 0.0%
+
+	/// Distinct people (customer_unique_id) with a valid order
+	measure 'Customers' = CALCULATE(DISTINCTCOUNT(fct_orders[customer_unique_id]), fct_orders[is_valid] = TRUE())
+		formatString: #,0
+
+	/// Valid orders placed on a later day than the customer's first purchase
+	measure 'Returning Order Share' = ```
+			DIVIDE(
+			    CALCULATE(COUNTROWS(fct_orders), fct_orders[is_return_order] = TRUE()),
+			    [Valid Orders]
+			)
+			```
+		formatString: 0.0%
+
+	/// Customers (cohorts 2017-01..2018-08) who bought on 2+ different days
+	measure 'Repeat Customer Share' = ```
+			DIVIDE(
+			    CALCULATE(COUNTROWS(dim_customer), dim_customer[is_repeat_customer] = TRUE()),
+			    COUNTROWS(dim_customer)
+			)
+			```
+		formatString: 0.0%
+
+	/// Item-level product value, for category and seller analysis
+	measure 'Item Product Value' = CALCULATE(SUM(fct_order_items[price]), fct_order_items[is_valid] = TRUE())
+		formatString: #,0
+
+	/// Category product value / all categories
+	measure 'Category Share' = DIVIDE([Item Product Value], CALCULATE([Item Product Value], ALL(fct_order_items[category])))
+		formatString: 0.0%
+
+	column Value
+		isHidden
+		formatString: 0
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Value]
+
+	partition Measures = calculated
+		mode: import
+		source = {0}
+

@@ -1,0 +1,48 @@
+table dim_date
+	dataCategory: Time
+
+	column date
+		dataType: dateTime
+		formatString: yyyy-mm-dd
+		isKey
+		summarizeBy: none
+		sourceColumn: date
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column month_start
+		dataType: dateTime
+		formatString: yyyy-mm
+		summarizeBy: none
+		sourceColumn: month_start
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column year_month
+		dataType: string
+		summarizeBy: none
+		sourceColumn: year_month
+
+	column year
+		dataType: int64
+		formatString: 0
+		summarizeBy: none
+		sourceColumn: year
+
+	column month
+		dataType: int64
+		formatString: 0
+		summarizeBy: none
+		sourceColumn: month
+
+	partition dim_date = m
+		mode: import
+		source =
+				let
+				    Source = Parquet.Document(File.Contents(DataFolder & "dim_date.parquet")),
+				    Filtered = Table.SelectRows(Source, each [is_complete_month]),
+				    Selected = Table.SelectColumns(Filtered, {"date", "month_start", "year_month", "year", "month"}),
+				    Typed = Table.TransformColumnTypes(Selected, {{"date", type date}, {"month_start", type date}, {"year_month", type text}, {"year", Int64.Type}, {"month", Int64.Type}})
+				in
+				    Typed
+

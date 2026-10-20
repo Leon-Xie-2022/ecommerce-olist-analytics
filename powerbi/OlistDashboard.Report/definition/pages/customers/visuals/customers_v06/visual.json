@@ -1,0 +1,148 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/1.5.0/schema.json",
+  "name": "customers_v06",
+  "position": {
+    "x": 640,
+    "y": 204,
+    "z": 6000,
+    "height": 500,
+    "width": 616,
+    "tabOrder": 6000
+  },
+  "visual": {
+    "visualType": "tableEx",
+    "query": {
+      "queryState": {
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "cohort_retention"
+                    }
+                  },
+                  "Property": "cohort"
+                }
+              },
+              "queryRef": "cohort_retention.cohort",
+              "nativeQueryRef": "cohort"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "cohort_retention"
+                    }
+                  },
+                  "Property": "cohort_size"
+                }
+              },
+              "queryRef": "cohort_retention.cohort_size",
+              "nativeQueryRef": "cohort_size"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "cohort_retention"
+                    }
+                  },
+                  "Property": "repeat_1m_pct"
+                }
+              },
+              "queryRef": "cohort_retention.repeat_1m_pct",
+              "nativeQueryRef": "repeat_1m_pct"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "cohort_retention"
+                    }
+                  },
+                  "Property": "repeat_3m_pct"
+                }
+              },
+              "queryRef": "cohort_retention.repeat_3m_pct",
+              "nativeQueryRef": "repeat_3m_pct"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "cohort_retention"
+                    }
+                  },
+                  "Property": "repeat_6m_pct"
+                }
+              },
+              "queryRef": "cohort_retention.repeat_6m_pct",
+              "nativeQueryRef": "repeat_6m_pct"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "cohort_retention"
+                    }
+                  },
+                  "Property": "repeat_12m_pct"
+                }
+              },
+              "queryRef": "cohort_retention.repeat_12m_pct",
+              "nativeQueryRef": "repeat_12m_pct"
+            }
+          ]
+        }
+      },
+      "sortDefinition": {
+        "sort": [
+          {
+            "field": {
+              "Column": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "cohort_retention"
+                  }
+                },
+                "Property": "cohort"
+              }
+            },
+            "direction": "Ascending"
+          }
+        ],
+        "isDefaultSort": false
+      }
+    },
+    "visualContainerObjects": {
+      "title": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Cohort repeat rate % (blank = not yet observable)'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true
+  }
+}
