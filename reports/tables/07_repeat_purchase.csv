@@ -1,0 +1,4 @@
+purchase_days,customers,customer_share_pct,orders,product_value,value_share_pct,median_days_to_second_visit,second_visit_within_90d_pct
+1,92925,97.83,93774,12933242.13,95.84,74.0,54.9
+2,1909,2.01,3882,492420.34,3.65,74.0,54.9
+3+,156,0.16,551,68738.27,0.51,74.0,54.9

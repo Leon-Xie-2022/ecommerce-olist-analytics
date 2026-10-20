@@ -1,0 +1,5 @@
+customer_region,route,delivered_orders,avg_delivery_days,avg_promised_days,late_rate_pct,avg_review,avg_freight
+customer in SP,interstate,9598,11.3,25.4,4.1,4.26,23.8
+customer in SP,same state,30586,7.9,17.9,4.7,4.25,15.13
+customer outside SP,interstate,51609,15.8,28.2,8.9,4.08,27.3
+customer outside SP,same state,3903,7.8,20.0,3.5,4.41,17.14

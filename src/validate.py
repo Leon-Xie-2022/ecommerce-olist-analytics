@@ -38,6 +38,9 @@ CHECKS = [
      "SELECT COUNT(is_late) FROM fct_orders",
      "SELECT COUNT(*) FROM orders WHERE order_status = 'delivered' "
      "AND order_delivered_customer_date IS NOT NULL"),
+    ("dim_customer: repeat customers = people with a return order",
+     "SELECT COUNT(*) FROM dim_customer WHERE is_repeat_customer",
+     "SELECT COUNT(DISTINCT customer_unique_id) FROM fct_orders WHERE is_return_order"),
     ("fct_order_items: one row per source item",
      "SELECT COUNT(*) FROM fct_order_items", "SELECT COUNT(*) FROM order_items"),
     ("fct_order_items: price total unchanged",

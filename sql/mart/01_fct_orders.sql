@@ -9,6 +9,9 @@
 --   reviews   : one review per order = the most recently answered one (547 orders have 2-3)
 --   customers : 1:1 on customer_id, adds the person-level customer_unique_id
 -- customer_order_seq numbers each person's VALID orders by purchase time (1 = first purchase).
+-- is_return_order = valid order placed on a LATER calendar day than the person's first valid order.
+--   869 of 2,888 people with 2+ orders only ever ordered again on the same day (a basket split into
+--   several orders), so counting every order with seq > 1 would overstate repeat purchase by ~40%.
 
 CREATE OR REPLACE TABLE fct_orders AS
 WITH item_agg AS (
@@ -102,5 +105,8 @@ SELECT
     CASE WHEN is_valid THEN
         ROW_NUMBER() OVER (PARTITION BY customer_unique_id, is_valid
                            ORDER BY purchase_ts, order_id)
-    END                                                                      AS customer_order_seq
+    END                                                                      AS customer_order_seq,
+    CASE WHEN is_valid THEN
+        purchase_date > MIN(purchase_date) OVER (PARTITION BY customer_unique_id, is_valid)
+    END                                                                      AS is_return_order
 FROM base;
