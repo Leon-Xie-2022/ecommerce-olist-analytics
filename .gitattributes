@@ -1,0 +1,4 @@
+# Weekly report outputs are written with LF line endings; keep them LF on checkout so a re-run
+# in a fresh clone reproduces the committed files byte for byte.
+output/weekly/**/*.csv text eol=lf
+output/weekly/**/*.json text eol=lf
