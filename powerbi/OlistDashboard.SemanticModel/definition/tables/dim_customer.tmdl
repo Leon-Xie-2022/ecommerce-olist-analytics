@@ -1,17 +1,17 @@
 table dim_customer
-	lineageTag: 8cffeeea-f50d-4bdd-afbf-a3a1f64c7c03
+	lineageTag: 8e07e92d-089b-45a8-a064-78770d8fad91
 
 	column customer_unique_id
 		dataType: string
 		isHidden
-		lineageTag: 3891af1f-fbf7-46fd-b660-cc7aba85d537
+		lineageTag: 0733ccdf-96c3-4bf1-936b-cb5581c07d5a
 		summarizeBy: none
 		sourceColumn: customer_unique_id
 
 	column cohort_month
 		dataType: dateTime
 		formatString: yyyy-mm
-		lineageTag: c00057dd-c4fa-4f81-a3c8-40a046ed1bfe
+		lineageTag: 5bc633dc-b43d-4d34-ab66-9ef2bf8dbd84
 		summarizeBy: none
 		sourceColumn: cohort_month
 
@@ -20,26 +20,26 @@ table dim_customer
 	column n_orders
 		dataType: int64
 		formatString: 0
-		lineageTag: 6bd213de-a31b-43e2-ad6f-cc4a6ab6f3d2
+		lineageTag: 5a3cfe45-12dc-47db-a0d8-a28e8b72397c
 		summarizeBy: none
 		sourceColumn: n_orders
 
 	column n_purchase_days
 		dataType: int64
 		formatString: 0
-		lineageTag: 1aacd4ca-f3ed-4364-8ed8-c4370339cee3
+		lineageTag: eac3db71-7599-49bf-99fd-e2d3bcd5681a
 		summarizeBy: none
 		sourceColumn: n_purchase_days
 
 	column first_order_state
 		dataType: string
-		lineageTag: 83f8090f-3ddb-4afe-ada2-dfe34ea0a6e2
+		lineageTag: 596f6e71-1677-4123-870d-2b6d4892a0e1
 		summarizeBy: none
 		sourceColumn: first_order_state
 
 	column is_repeat_customer
 		dataType: boolean
-		lineageTag: 2c030db7-fe25-4981-a1d9-a1c83fa49cc0
+		lineageTag: 96c81e76-0eb9-450e-a7b1-6d9b8439eea6
 		summarizeBy: none
 		sourceColumn: is_repeat_customer
 

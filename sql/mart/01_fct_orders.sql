@@ -111,6 +111,12 @@ SELECT
         WHEN days_late <= 7   THEN '5. 4-7 days late'
         ELSE                       '6. 8+ days late'
     END                                                                      AS delivery_bucket,
+    CASE
+        WHEN n_items = 0   THEN NULL
+        WHEN n_sellers > 1 THEN '3. several sellers'
+        WHEN n_items > 1   THEN '2. several items, one seller'
+        ELSE                    '1. one item'
+    END                                                                      AS order_type,
     CASE WHEN is_valid THEN
         ROW_NUMBER() OVER (PARTITION BY customer_unique_id, is_valid
                            ORDER BY purchase_ts, order_id)

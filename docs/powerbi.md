@@ -68,7 +68,7 @@ so each category's value is divided by the total for the current filters (month,
 | Page | Visuals |
 |---|---|
 | Overview | Cards: valid orders, product value, AOV, late rate, avg review · line: product value by month · bar: product value by category · state slicer |
-| Delivery & Reviews | Cards: delivered orders, avg delivery days, late rate, low-review share · line: late rate by month · column: avg review by delivery bucket · bar: late rate by state · state slicer |
+| Delivery & Reviews | Cards: delivered orders, avg delivery days, late rate, low-review share · line: late rate by month · column: avg review by delivery bucket · bar: late rate by state · clustered bar: low-review share vs late rate by order type (split orders) · state slicer |
 | Customers | Cards: customers, returning-order share, repeat-customer share · line: returning-order share by month · bar: orders by payment type · table: cohort repeat rates |
 
 ## Reconciliation with SQL
@@ -89,3 +89,14 @@ With no slicer selected, every card must equal the SQL result in
 | Customers | 94,707 |
 | Returning Order Share | 2.4% |
 | Repeat Customer Share | 2.2% |
+
+Split-order chart (Delivery & Reviews page), checked against `sql/metrics/13_split_order_complaints.sql`:
+
+| Order type | Low Review Share (Delivered) | Late Rate |
+|---|---|---|
+| 1. one item | 11.3% | 7.0% |
+| 2. several items, one seller | 23.6% | 6.0% |
+| 3. several sellers | 47.1% | 1.0% |
+
+The low-review shares equal the SQL result. The late rates differ by about 0.2 points from SQL 13 (6.8%, 5.8%), because
+the `Late Rate` measure covers all delivered orders, while SQL 13 covers only delivered orders that have a review.

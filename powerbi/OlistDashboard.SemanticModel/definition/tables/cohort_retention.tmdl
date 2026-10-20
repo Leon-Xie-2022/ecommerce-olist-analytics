@@ -1,51 +1,51 @@
 table cohort_retention
-	lineageTag: 97f196df-d19f-49b0-b66d-069d32a0592f
+	lineageTag: d1c281bc-c88f-4de3-8ad7-88d44ed23520
 
 	column cohort
 		dataType: string
-		lineageTag: ebde2dcd-974a-4661-92f0-3723f2081b4b
+		lineageTag: 59ba80df-87bf-4c01-8471-501cc54b40d7
 		summarizeBy: none
 		sourceColumn: cohort
 
 	column cohort_size
 		dataType: int64
 		formatString: #,0
-		lineageTag: 33be33f2-b39e-46a4-a6b3-9c18cce7e49f
+		lineageTag: bac70fc4-773f-4f47-8a21-f1b82e8e02dc
 		summarizeBy: none
 		sourceColumn: cohort_size
 
 	column months_observed
 		dataType: int64
 		formatString: 0
-		lineageTag: a9ac380d-6269-4049-9322-c86ae273cfde
+		lineageTag: f342d18a-6807-46d0-b4fd-3a0213192554
 		summarizeBy: none
 		sourceColumn: months_observed
 
 	column repeat_1m_pct
 		dataType: double
 		formatString: 0.00
-		lineageTag: e51e7736-fa0f-4d4b-acb3-b2e696cb0e27
+		lineageTag: 21194744-2419-4dfa-aa9a-8bc00c1b2f38
 		summarizeBy: none
 		sourceColumn: repeat_1m_pct
 
 	column repeat_3m_pct
 		dataType: double
 		formatString: 0.00
-		lineageTag: 4d05dcb4-9681-4698-a3c8-b06f8134c6bf
+		lineageTag: 13517605-67d1-4535-903f-bd878efcd6df
 		summarizeBy: none
 		sourceColumn: repeat_3m_pct
 
 	column repeat_6m_pct
 		dataType: double
 		formatString: 0.00
-		lineageTag: ef179c89-c229-4cfb-8763-73837f7f1d83
+		lineageTag: d4571d7a-228d-4ce9-82e9-5f725739b19f
 		summarizeBy: none
 		sourceColumn: repeat_6m_pct
 
 	column repeat_12m_pct
 		dataType: double
 		formatString: 0.00
-		lineageTag: aeb8cc1a-d2c7-4430-b3d9-d39b27a40810
+		lineageTag: 8dc72176-1034-46b9-9223-76d972b67003
 		summarizeBy: none
 		sourceColumn: repeat_12m_pct
 

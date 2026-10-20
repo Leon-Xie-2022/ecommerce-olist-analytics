@@ -1,12 +1,12 @@
 table dim_date
-	lineageTag: 1d9ef43c-c1e0-4f37-8833-bd95993642c9
+	lineageTag: b044aa66-7a8a-4449-9ff1-b56d6511401d
 	dataCategory: Time
 
 	column date
 		dataType: dateTime
 		isKey
 		formatString: yyyy-mm-dd
-		lineageTag: c17dbf6a-1925-4fa3-94c1-2b480baca417
+		lineageTag: 8bb79922-735f-4f2e-8461-16af8910f928
 		summarizeBy: none
 		sourceColumn: date
 
@@ -15,7 +15,7 @@ table dim_date
 	column month_start
 		dataType: dateTime
 		formatString: yyyy-mm
-		lineageTag: e51d3048-d904-4380-a52f-f9dd29d9f288
+		lineageTag: ecde0fb2-c819-4599-b156-0c12a91d7d37
 		summarizeBy: none
 		sourceColumn: month_start
 
@@ -23,21 +23,21 @@ table dim_date
 
 	column year_month
 		dataType: string
-		lineageTag: b8f2eda0-ea33-40a2-b753-d0f4ce6d5468
+		lineageTag: 7f77999c-e389-4980-b802-61ebe7f462c9
 		summarizeBy: none
 		sourceColumn: year_month
 
 	column year
 		dataType: int64
 		formatString: 0
-		lineageTag: 6e007a1e-20e9-4923-972b-ce88ef14396d
+		lineageTag: 87df621b-66b5-4a76-bd7a-e1abb1f6251d
 		summarizeBy: none
 		sourceColumn: year
 
 	column month
 		dataType: int64
 		formatString: 0
-		lineageTag: 4b1a2f00-79b4-4677-9cb8-2b159ae76062
+		lineageTag: ae45e65a-654b-4197-bd1c-07060fa7a8c5
 		summarizeBy: none
 		sourceColumn: month
 

@@ -1,42 +1,42 @@
 table fct_orders
-	lineageTag: 8bd9b5a1-9151-48f0-8c5b-6375f2637567
+	lineageTag: fa9254a0-4ae0-4dcf-9f3f-5d7a4f2ec388
 
 	column order_id
 		dataType: string
 		isHidden
-		lineageTag: 74b993fb-1656-4d5c-b706-aba95802bc49
+		lineageTag: 1acbd60a-0ae0-455e-a9e8-7f68c1233a4f
 		summarizeBy: none
 		sourceColumn: order_id
 
 	column customer_unique_id
 		dataType: string
 		isHidden
-		lineageTag: bfcf3e4f-eb35-455a-bb4b-4688cd138003
+		lineageTag: 599c3682-6f0b-4f0f-900f-673f43002353
 		summarizeBy: none
 		sourceColumn: customer_unique_id
 
 	column customer_state
 		dataType: string
-		lineageTag: 88979390-9a7e-41be-aa62-cdcfefe6bb13
+		lineageTag: 78a4b430-256f-4d87-a147-71b905eb066d
 		summarizeBy: none
 		sourceColumn: customer_state
 
 	column order_status
 		dataType: string
-		lineageTag: 785b443a-c71b-4b62-bd36-6b8bd92aafe1
+		lineageTag: 6cec8698-6fe3-4e70-b62e-9a0716b08bca
 		summarizeBy: none
 		sourceColumn: order_status
 
 	column is_valid
 		dataType: boolean
-		lineageTag: b2fbeebf-95dd-4460-ba28-1ae8ecf1955c
+		lineageTag: a7903b8c-737c-4a0a-8275-2701fa085272
 		summarizeBy: none
 		sourceColumn: is_valid
 
 	column purchase_date
 		dataType: dateTime
 		formatString: yyyy-mm-dd
-		lineageTag: 3a4e1fb6-605d-49ea-b70e-f07a2decbd68
+		lineageTag: c5d0c535-dfe6-4b60-bafd-ef0f9c8c2dc4
 		summarizeBy: none
 		sourceColumn: purchase_date
 
@@ -45,95 +45,101 @@ table fct_orders
 	column n_items
 		dataType: int64
 		formatString: 0
-		lineageTag: 80c855ec-d1d2-47cc-90ff-54b65caef25a
+		lineageTag: f93dab44-a3f0-485a-9d12-83afdfed79de
 		summarizeBy: none
 		sourceColumn: n_items
 
 	column product_value
 		dataType: double
 		formatString: #,0.00
-		lineageTag: b5beb886-a464-499d-ae40-9890639e4669
+		lineageTag: c6fef8ae-6e95-40da-9667-08f8d5832033
 		summarizeBy: none
 		sourceColumn: product_value
 
 	column freight_value
 		dataType: double
 		formatString: #,0.00
-		lineageTag: d8e5ffe2-7414-4deb-be4a-b214f22be282
+		lineageTag: 70e7712b-ceb3-42e8-8cd5-c98192317402
 		summarizeBy: none
 		sourceColumn: freight_value
 
 	column payment_value
 		dataType: double
 		formatString: #,0.00
-		lineageTag: a23c2765-6cbf-47d5-b11b-6d90f380395f
+		lineageTag: c65d4dc8-4266-4a49-b9a0-4c50d983fb11
 		summarizeBy: none
 		sourceColumn: payment_value
 
 	column main_payment_type
 		dataType: string
-		lineageTag: 8ff2e166-f571-413c-bbcb-a4bd43dc772b
+		lineageTag: a1740019-d15e-4add-b413-4db83d9af3b4
 		summarizeBy: none
 		sourceColumn: main_payment_type
 
 	column max_installments
 		dataType: int64
 		formatString: 0
-		lineageTag: 9abf345c-e29c-4dbf-8c9a-0332005f1591
+		lineageTag: d2a2f6f2-e8bb-46ec-bac0-0b856c7c3615
 		summarizeBy: none
 		sourceColumn: max_installments
 
 	column is_delivered
 		dataType: boolean
-		lineageTag: 547679f7-64df-41a5-8910-fefa0f834b53
+		lineageTag: fea257dd-9ee4-4d47-8dd6-eadcb98b575d
 		summarizeBy: none
 		sourceColumn: is_delivered
 
 	column delivery_days
 		dataType: int64
 		formatString: 0
-		lineageTag: 3353959b-7db3-453f-a97f-01865b1190cb
+		lineageTag: ed43c421-6c9e-4b8f-a7e5-d3a64a76bc93
 		summarizeBy: none
 		sourceColumn: delivery_days
 
 	column promised_days
 		dataType: int64
 		formatString: 0
-		lineageTag: a492e561-f6ec-425d-912a-d90f4fbf4afd
+		lineageTag: 7a47b188-b58a-47c1-9f2a-ece125ad355b
 		summarizeBy: none
 		sourceColumn: promised_days
 
 	column days_late
 		dataType: int64
 		formatString: 0
-		lineageTag: 97fab391-8603-4e6c-8688-d4da5fa38585
+		lineageTag: 2698aa8a-0d60-43ca-a9fb-bab662b9fee2
 		summarizeBy: none
 		sourceColumn: days_late
 
 	column review_score
 		dataType: int64
 		formatString: 0
-		lineageTag: 1c8343c7-327b-46d6-afad-5fcd94e498a2
+		lineageTag: 7abf7a9e-7722-40d3-8834-1482029307f0
 		summarizeBy: none
 		sourceColumn: review_score
 
 	column is_late
 		dataType: boolean
-		lineageTag: 33a412b5-d4ab-4137-ab0a-0b202a18d630
+		lineageTag: d958db6e-efb5-4c20-8d16-4db2b92fd758
 		summarizeBy: none
 		sourceColumn: is_late
 
 	column delivery_bucket
 		dataType: string
-		lineageTag: 963b91e9-d632-44fc-be4a-53c744fca116
+		lineageTag: 6e52e1ac-1e2b-4002-912b-ee976a5b6f53
 		summarizeBy: none
 		sourceColumn: delivery_bucket
 
 	column is_return_order
 		dataType: boolean
-		lineageTag: 117d300b-600f-4680-956d-eaae21c3f648
+		lineageTag: e7df700b-c466-4d28-bd65-2dc1f74e42e9
 		summarizeBy: none
 		sourceColumn: is_return_order
+
+	column order_type
+		dataType: string
+		lineageTag: 137d8331-da41-45c6-b0f7-fc95263dc8e5
+		summarizeBy: none
+		sourceColumn: order_type
 
 	partition fct_orders = m
 		mode: import
@@ -141,8 +147,8 @@ table fct_orders
 				let
 				    Source = Parquet.Document(File.Contents(DataFolder & "fct_orders.parquet")),
 				    Filtered = Table.SelectRows(Source, each [is_complete_month]),
-				    Selected = Table.SelectColumns(Filtered, {"order_id", "customer_unique_id", "customer_state", "order_status", "is_valid", "purchase_date", "n_items", "product_value", "freight_value", "payment_value", "main_payment_type", "max_installments", "is_delivered", "delivery_days", "promised_days", "days_late", "review_score", "is_late", "delivery_bucket", "is_return_order"}),
-				    Typed = Table.TransformColumnTypes(Selected, {{"order_id", type text}, {"customer_unique_id", type text}, {"customer_state", type text}, {"order_status", type text}, {"is_valid", type logical}, {"purchase_date", type date}, {"n_items", Int64.Type}, {"product_value", type number}, {"freight_value", type number}, {"payment_value", type number}, {"main_payment_type", type text}, {"max_installments", Int64.Type}, {"is_delivered", type logical}, {"delivery_days", Int64.Type}, {"promised_days", Int64.Type}, {"days_late", Int64.Type}, {"review_score", Int64.Type}, {"is_late", type logical}, {"delivery_bucket", type text}, {"is_return_order", type logical}})
+				    Selected = Table.SelectColumns(Filtered, {"order_id", "customer_unique_id", "customer_state", "order_status", "is_valid", "purchase_date", "n_items", "product_value", "freight_value", "payment_value", "main_payment_type", "max_installments", "is_delivered", "delivery_days", "promised_days", "days_late", "review_score", "is_late", "delivery_bucket", "order_type", "is_return_order"}),
+				    Typed = Table.TransformColumnTypes(Selected, {{"order_id", type text}, {"customer_unique_id", type text}, {"customer_state", type text}, {"order_status", type text}, {"is_valid", type logical}, {"purchase_date", type date}, {"n_items", Int64.Type}, {"product_value", type number}, {"freight_value", type number}, {"payment_value", type number}, {"main_payment_type", type text}, {"max_installments", Int64.Type}, {"is_delivered", type logical}, {"delivery_days", Int64.Type}, {"promised_days", Int64.Type}, {"days_late", Int64.Type}, {"review_score", Int64.Type}, {"is_late", type logical}, {"delivery_bucket", type text}, {"order_type", type text}, {"is_return_order", type logical}})
 				in
 				    Typed
 

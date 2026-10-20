@@ -14,11 +14,7 @@ WITH orders AS (
         order_id,
         review_score,
         is_late,
-        CASE
-            WHEN n_sellers > 1 THEN '3. several sellers'
-            WHEN n_items > 1   THEN '2. several items, one seller'
-            ELSE                    '1. one item'
-        END AS order_type
+        order_type                     -- defined once, in sql/mart/01_fct_orders.sql
     FROM fct_orders
     WHERE is_delivered AND is_complete_month AND review_score IS NOT NULL
 ),

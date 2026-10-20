@@ -53,6 +53,7 @@ TABLES = {
         ("review_score", "int", "0", False),
         ("is_late", "bool", None, False),
         ("delivery_bucket", "text", None, False),
+        ("order_type", "text", None, False),
         ("is_return_order", "bool", None, False),
     ]),
     "fct_order_items": ("each [is_complete_month]", [
@@ -141,6 +142,11 @@ MEASURES = {
         "    CALCULATE(COUNTROWS(fct_orders), fct_orders[is_valid] = TRUE(), fct_orders[review_score] IN {1, 2}),\n"
         "    CALCULATE(COUNT(fct_orders[review_score]), fct_orders[is_valid] = TRUE())\n)",
         "0.0%", "Share of 1-2 star reviews among reviewed valid orders"),
+    "Low Review Share (Delivered)": (
+        "DIVIDE(\n"
+        "    CALCULATE(COUNTROWS(fct_orders), fct_orders[is_delivered] = TRUE(), fct_orders[review_score] IN {1, 2}),\n"
+        "    CALCULATE(COUNT(fct_orders[review_score]), fct_orders[is_delivered] = TRUE())\n)",
+        "0.0%", "Share of 1-2 star reviews among reviewed delivered orders"),
     "Customers": (
         "CALCULATE(DISTINCTCOUNT(fct_orders[customer_unique_id]), fct_orders[is_valid] = TRUE())",
         "#,0", "Distinct people (customer_unique_id) with a valid order"),
@@ -310,7 +316,7 @@ def projection(field, display=None):
     return proj
 
 
-CHARTS = {"lineChart", "barChart", "columnChart"}
+CHARTS = {"lineChart", "barChart", "columnChart", "clusteredBarChart"}
 
 # Card number formatting: (display units, decimals). Unlisted cards use the measure's format string.
 CARD_FORMAT = {
@@ -420,9 +426,15 @@ def build_pages():
                  roles={"Category": [bucket], "Y": [measure("Avg Review Score (Delivered)")]},
                  sort=(bucket, "Ascending"), data_labels=True,
                  title="Avg review score by delivery outcome (association, not causation)")
-    delivery.add("barChart", 640, TOP, 616, BOTTOM - TOP,
+    delivery.add("barChart", 640, TOP, 616, half,
                  roles={"Category": [column("fct_orders", "customer_state")], "Y": [measure("Late Rate")]},
                  sort=(measure("Late Rate"), "Descending"), title="Late rate by customer state")
+    order_type = column("fct_orders", "order_type")
+    delivery.add("clusteredBarChart", 640, TOP + half + 16, 616, half,  # side by side, not stacked
+                 roles={"Category": [order_type],
+                        "Y": [measure("Low Review Share (Delivered)"), measure("Late Rate")]},
+                 sort=(order_type, "Ascending"), data_labels=True,
+                 title="Split orders: rarely late, but far more 1-2 star reviews")
 
     customers = Page("customers", "Customers")
     customers.title("Customers & repeat purchase",
