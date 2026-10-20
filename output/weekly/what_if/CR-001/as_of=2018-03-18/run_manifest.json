@@ -1,6 +1,6 @@
 {
-  "run_id": "2018-03-18_20261020T210018",
-  "started_at": "2026-10-20T21:00:18+08:00",
+  "run_id": "2018-03-18_20261020T225833",
+  "started_at": "2026-10-20T22:58:33+08:00",
   "as_of_date": "2018-03-18",
   "window": {
     "start": "2018-03-12",
@@ -20,7 +20,7 @@
     "mart_db": "data/processed/olist.duckdb",
     "output_dir": "output/weekly"
   },
-  "code_version": "365cc52",
+  "code_version": "cd94e5c",
   "inputs": {
     "orders.parquet": {
       "sha256": "c789a6467a47f256531183b9bce342f95d182cfb297275eae66fedac4cf34b97"
@@ -53,14 +53,14 @@
       "sha256": "cb47e54da37540f9b62914ac96a25d1feb44263b492f6cae8c51c6cfa4da62e3"
     },
     "reconciliation.csv": {
-      "rows": 15,
-      "sha256": "ef20b66795d9de58129af2fec43c2277e26f84b064ed00308987d360556d4109"
+      "rows": 17,
+      "sha256": "6626300f4260b107bb5fbaacb8d6635b8a72985668dcfebe027f622402563918"
     }
   },
   "checks": {
     "input_files_and_columns": "PASS",
     "primary_keys_unique": "PASS",
-    "reconciliation": "15/15 PASS"
+    "reconciliation": "17/17 PASS"
   },
-  "seconds": 1.77
+  "seconds": 1.7
 }

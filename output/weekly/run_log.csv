@@ -18,3 +18,6 @@ run_id,started_at,as_of_date,label,status,exit_code,message,output_folder,publis
 2018-03-18_20261020T210428,2026-10-20T21:04:28+08:00,2018-03-18,,SUCCESS,0,15/15 reconciliation checks passed,output/weekly/as_of=2018-03-18,True,1.85
 2018-03-11_20261020T210449,2026-10-20T21:04:49+08:00,2018-03-11,,SUCCESS,0,15/15 reconciliation checks passed,output/weekly/as_of=2018-03-11,True,1.74
 2018-03-18_20261020T210500,2026-10-20T21:05:00+08:00,2018-03-18,,SUCCESS,0,15/15 reconciliation checks passed,output/weekly/as_of=2018-03-18,True,1.91
+2018-03-18_20261020T225833,2026-10-20T22:58:33+08:00,2018-03-18,CR-001,SUCCESS,0,17/17 reconciliation checks passed,output/weekly/what_if/CR-001/as_of=2018-03-18,False,1.72
+2018-03-11_20261020T225836,2026-10-20T22:58:36+08:00,2018-03-11,,SUCCESS,0,17/17 reconciliation checks passed,output/weekly/as_of=2018-03-11,True,1.69
+2018-03-18_20261020T225846,2026-10-20T22:58:46+08:00,2018-03-18,,SUCCESS,0,17/17 reconciliation checks passed,output/weekly/as_of=2018-03-18,True,1.69

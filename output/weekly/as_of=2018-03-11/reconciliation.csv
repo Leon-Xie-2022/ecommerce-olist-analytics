@@ -14,3 +14,5 @@ check_order,check_name,source_a,value_a,source_b,value_b,difference,expected_dif
 13,Exceptions: one row per order,exceptions rows,466.0,distinct order_id,466.0,0.0,0.0,PASS,,2018-03-11,2018-03-05,2018-03-11
 14,Exceptions listed: summary vs table,weekly_summary,466.0,exceptions rows,466.0,0.0,0.0,PASS,,2018-03-11,2018-03-05,2018-03-11
 15,Product value of exceptions: order grain vs item grain,weekly_summary,67084.08,pit_items (item rows),67084.08,0.0,0.0,PASS,No join fan-out,2018-03-11,2018-03-05,2018-03-11
+16,Product value of exceptions: report vs mart,weekly_summary,67084.08,mart.fct_orders (same order IDs),67084.08,0.0,0.0,PASS,Covers orders bought before the window,2018-03-11,2018-03-05,2018-03-11
+17,Payment value of exceptions: report vs mart,exceptions,81742.96,mart.fct_orders (same order IDs),81742.96,0.0,0.0,PASS,Catches duplicated or changed payment rows,2018-03-11,2018-03-05,2018-03-11
