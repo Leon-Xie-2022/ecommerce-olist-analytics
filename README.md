@@ -92,6 +92,34 @@ reviewed in Git. Model details and DAX: [`docs/powerbi.md`](docs/powerbi.md).
 ![Overview page](reports/figures/dashboard_overview.png)
 ![Customers page](reports/figures/dashboard_customers.png)
 
+## Phase 2: weekly operations report with Excel / Power Query
+
+A repeatable weekly run on the same data: pick a historical cut-off date, use only what was known by then,
+produce a weekly summary, a route diagnosis and a ranked follow-up list of overdue orders in SQL, reconcile
+them, and load them into Excel with Power Query.
+
+```powershell
+python src/weekly_report.py --as-of 2018-03-18   # SQL outputs + run manifest; publishes only if 15 checks pass
+python src/check_weekly.py                        # re-run, bad input, folder-in-use and no-future-data checks
+```
+
+Then open `excel/olist_weekly_ops.xlsx` and click **Data → Refresh All**.
+
+- **Point in time.** Later delivery, carrier and approval dates are removed before any metric is computed, and
+  the final `order_status` is never used. A snapshot test with all later data physically removed gives
+  identical results. Cancellations have no date, so the follow-up list is a historical diagnostic list.
+- **Two populations.** Deliveries completed this week (final on-time/late outcome) are kept apart from open
+  orders at the cut-off; orders not yet due are "outcome unknown", never on time.
+- **Safe re-runs.** Same inputs and settings give byte-identical files; a missing file or column, a duplicate
+  key or a locked folder stops the run and leaves the last good output in place.
+- **Excel refresh tested** by publishing two weeks in turn and running Refresh All through Excel automation;
+  every table and the pivot matched the CSVs. A manual click-through by a user is still open.
+
+![Excel weekly summary after Refresh All](reports/figures/excel_weekly_summary.png)
+
+Details, demo script and acceptance record: [`docs/weekly_ops/`](docs/weekly_ops/README.md). Simulated
+requirements, no real users, scheduling or business results.
+
 ## Reproduce
 
 Requires Python 3.12 and, for the dashboard, Power BI Desktop (Windows).
@@ -123,14 +151,19 @@ generated the first version of the project. Rerunning it overwrites the version 
 ## Project structure
 
 ```
-├── docs/            data source & licence, data dictionary, ER diagram, metric definitions, Power BI notes
+├── config/          weekly report parameters (cut-off date, window, thresholds)
+├── docs/            data source & licence, data dictionary, ER diagram, metric definitions, Power BI notes,
+│                    weekly_ops/ (requirements, point-in-time rules, change request, acceptance)
 ├── sql/
 │   ├── mart/        order mart, item fact, customer and date dimensions
 │   ├── metrics/     13 analyses
 │   ├── models/      model dataset for the review-driver regression
+│   ├── weekly/      point-in-time order facts, exceptions, route diagnosis, weekly summary, reconciliation
 │   └── checks/      fan-out demonstration, Power BI expected values
 ├── src/             pipeline, validation, SQL runner, review_drivers, Power BI export/scaffold
 ├── powerbi/         OlistDashboard.pbip (TMDL semantic model + PBIR report)
+├── excel/           weekly workbook, Power Query M code, build and refresh scripts
+├── output/weekly/   weekly report runs (one folder per cut-off, latest/, run_log.csv)
 ├── reports/         analysis brief, data quality report, result tables, figures
 └── data/            raw and processed data (not committed)
 ```
@@ -140,6 +173,8 @@ generated the first version of the project. Rerunning it overwrites the version 
 [Brazilian E-Commerce Public Dataset by Olist](https://www.kaggle.com/datasets/olistbr/brazilian-ecommerce),
 licensed **CC BY-NC-SA 4.0**. Data © Olist; used here for non-commercial learning. Raw data is not redistributed.
 Download date, version and checksums: [`docs/data_source.md`](docs/data_source.md).
+The weekly report outputs (`output/weekly/`, `excel/`) contain order and seller IDs derived from this data and
+are shared under the same licence.
 
 ## Limitations
 
