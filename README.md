@@ -10,10 +10,11 @@ it is not client work and makes no claims about business impact.
 
 - Source: [Olist Brazilian E-Commerce Public Dataset](https://www.kaggle.com/datasets/olistbr/brazilian-ecommerce) (Kaggle, published by Olist).
 - Licence and attribution: *TBD — check the dataset page at download time and record it in [`docs/data_source.md`](docs/data_source.md).*
-- Raw files are **not** redistributed in this repository. To reproduce:
-  1. Sign in to Kaggle and download the dataset ZIP from the link above.
-  2. Extract all `olist_*.csv` files (and `product_category_name_translation.csv`) into `data/raw/`.
-  3. Run `python src/check_raw.py` to confirm all files are present and to print their SHA-256 checksums.
+- Raw files are **not** redistributed in this repository. To reproduce, either:
+  - **Kaggle CLI** (needs a Kaggle API token in `%USERPROFILE%\.kaggle\kaggle.json`):
+    `kaggle datasets download -d olistbr/brazilian-ecommerce -p data/raw --unzip`
+  - **Browser:** sign in to Kaggle, download the ZIP from the link above and extract all CSVs into `data/raw/`.
+- Then run `python src/check_raw.py` to confirm all files are present and to print their SHA-256 checksums.
 
 ## Project structure
 
