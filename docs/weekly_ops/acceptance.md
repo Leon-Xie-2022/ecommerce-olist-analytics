@@ -36,7 +36,7 @@ fixing four defects found in code review (section D).
 | B3 | Publish 2018-03-18, Refresh All via Excel COM | New period appears; tables and pivot update; values = CSV | 13/13 match; pivot total 602 orders / BRL 83,189.63 | same file, step 2 | Pass |
 | B4 | Formats readable (dates, BRL, %, filters) | Dates yyyy-mm-dd, money 2 dp, rates %, filter buttons | As expected | `reports/figures/excel_*.png` | Pass |
 | B5 | User opens the workbook and clicks Data > Refresh All by hand (2026-10-21) | Publish 2018-03-11, refresh: Read Me shows 2018-03-11 and 17 of 17 PASS; publish 2018-03-18, refresh: date changes, late rate 7.8% -> 12.3% | As expected, reported by the user; both runs SUCCESS in run_log.csv | user report; `output/weekly/run_log.csv` (2026-10-21 lines) | Pass |
-| B6 | **Workbook opened from another folder / another PC** | `OutputFolder` formula resolves to that copy's `output\weekly\latest\` | — | — | **Not executed** |
+| B6 | Workbook opened from another folder (fresh git clone, 2026-10-21) | `OutputFolder` resolves to that copy's `output\weekly\latest\` | Resolved to the clone's folder; Refresh All loaded 2018-03-18, 602 exceptions, 17 of 17 PASS. Re-running both cut-offs in the clone reproduced every data file byte for byte | `excel/refresh_and_read.ps1` run in the clone | Pass |
 | B7 | Security / privacy prompts on manual refresh | Refresh completes, at most a one-time prompt | Refresh completed in the user's Excel; no blocking prompt reported. Excel asks to save on close (expected: refresh changes the file) | user report | Pass |
 
 B2–B3 use COM automation (`Workbook.RefreshAll()`, the command behind the Refresh All button) and read the
