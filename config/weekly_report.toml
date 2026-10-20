@@ -1,0 +1,28 @@
+# Weekly delivery operations report: run parameters.
+# Definitions: docs/weekly_ops/point_in_time.md. Any key can be overridden for one run with
+#   python src/weekly_report.py --as-of 2018-03-18 --set min_route_sample=50 --label CR-001
+
+# Cut-off date (dataset-local calendar date). The report is produced "at the end of this day":
+# only events timestamped before (as_of_date + 1 day) 00:00 are known. Never defaults to today.
+as_of_date = "2018-03-11"
+
+# Reporting window = the window_days calendar days ending on as_of_date, both ends inclusive.
+window_days = 7
+
+# Routes with fewer delivered orders in the window are shown but flagged and not ranked.
+# 30 is a demonstration rule, not an optimised threshold.
+min_route_sample = 30
+
+# Overdue orders whose estimated date passed more than this many days ago are counted as "stale"
+# in the summary but not listed: their status (e.g. cancelled long ago) cannot be reconstructed.
+max_overdue_days = 30
+
+# Priority of overdue orders by days overdue (P1 >= p1_min_days_overdue, P2 >= p2_min_days_overdue,
+# otherwise P3). Early warnings (seller missed ship-by date, not yet overdue) are P4.
+p1_min_days_overdue = 8
+p2_min_days_overdue = 4
+
+# Inputs and outputs, relative to the project root.
+input_dir = "data/processed"
+mart_db = "data/processed/olist.duckdb"
+output_dir = "output/weekly"

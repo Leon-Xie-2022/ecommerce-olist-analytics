@@ -29,3 +29,7 @@ Thumbs.db
 # Power BI local files (cache.abf holds the imported data)
 **/.pbi/localSettings.json
 **/.pbi/cache.abf
+
+# Weekly report temporary publish folders
+output/weekly/.staging_*/
+output/weekly/*.old/
