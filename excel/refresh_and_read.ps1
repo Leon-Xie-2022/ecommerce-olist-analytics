@@ -75,6 +75,7 @@ try {
         Export-RangePicture $wb "Reconciliation" "A1:I20" (Join-Path $dir "excel_reconciliation.png")
         $result.screenshots = $dir
     }
+    $wb.RemovePersonalInformation = $true   # no Office user name in author / pivot metadata
     $wb.Worksheets.Item("Read Me").Activate()
     $wb.Save()
     $result | ConvertTo-Json -Depth 4

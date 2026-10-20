@@ -195,6 +195,7 @@ try {
     $pt.PivotCache().RefreshOnFileOpen = $false
     $wb.Connections.Item("Query - Exceptions").OLEDBConnection.BackgroundQuery = $false
 
+    $wb.RemovePersonalInformation = $true   # no Office user name in author / pivot metadata
     $wb.Worksheets.Item("Read Me").Activate()
     $wb.Save()
     Write-Output "built $target"

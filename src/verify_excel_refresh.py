@@ -12,8 +12,10 @@ This is scripted Excel automation: the same Refresh All a user clicks, run throu
 the Excel UI is recorded separately in docs/weekly_ops/acceptance.md.
 """
 import json
+import re
 import subprocess
 import sys
+import zipfile
 
 import pandas as pd
 
@@ -22,11 +24,32 @@ from config import FIGURES_DIR, PROJECT_ROOT
 AS_OF_DATES = ["2018-03-11", "2018-03-18"]
 LATEST = PROJECT_ROOT / "output" / "weekly" / "latest"
 PS1 = PROJECT_ROOT / "excel" / "refresh_and_read.ps1"
+WORKBOOK = PROJECT_ROOT / "excel" / "olist_weekly_ops.xlsx"
 RESULTS_PATH = PROJECT_ROOT / "docs" / "weekly_ops" / "evidence" / "excel_refresh_results.md"
 
 
 def close(a, b, tol=0.005):
     return a is not None and b is not None and abs(float(a) - float(b)) < tol
+
+
+def strip_local_paths(path):
+    """Remove this machine's folder from the saved workbook: Excel stores the save location (absPath) and
+    the last computed value of the OutputFolder formula. Both are rebuilt by Excel when the file is opened."""
+    with zipfile.ZipFile(path) as z:
+        parts = {info: z.read(info.filename) for info in z.infolist()}
+    out = {}
+    for info, data in parts.items():
+        if info.filename == "xl/workbook.xml":
+            data = re.sub(rb"<mc:AlternateContent[^>]*><mc:Choice Requires=\"x15\"><x15ac:absPath[^>]*/>"
+                          rb"</mc:Choice></mc:AlternateContent>", b"", data)
+        elif info.filename.startswith("xl/worksheets/"):
+            data = re.sub(rb'(<c r="B6"[^>]*?)( t="str")?(><f[^>]*>[^<]*</f>)<v>[^<]*</v>', rb"\1\3", data)
+        out[info] = data
+    tmp = path.with_suffix(".tmp.xlsx")
+    with zipfile.ZipFile(tmp, "w", zipfile.ZIP_DEFLATED) as z:
+        for info, data in out.items():
+            z.writestr(info, data)
+    tmp.replace(path)
 
 
 def main():
@@ -94,6 +117,7 @@ def main():
             "in [`../acceptance.md`](../acceptance.md).", "", "\n\n".join(sections), "",
             f"**Overall: {'PASS' if all_ok else 'FAIL'}.**", ""]
     RESULTS_PATH.write_text("\n".join(text), encoding="utf-8")
+    strip_local_paths(WORKBOOK)
     print(f"\n-> {RESULTS_PATH.relative_to(PROJECT_ROOT).as_posix()}")
     sys.exit(0 if all_ok else 1)
 
