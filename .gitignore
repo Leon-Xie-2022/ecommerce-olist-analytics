@@ -1,0 +1,27 @@
+# Virtual environment
+.venv/
+
+# Data (never commit raw or processed data; keep empty folders via .gitkeep)
+data/raw/*
+data/processed/*
+!data/raw/.gitkeep
+!data/processed/.gitkeep
+*.parquet
+
+# Python / Jupyter
+__pycache__/
+*.py[cod]
+.ipynb_checkpoints/
+
+# Secrets
+.env
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Local database files (rebuilt from data/raw by the scripts)
+*.duckdb
+*.duckdb.wal
