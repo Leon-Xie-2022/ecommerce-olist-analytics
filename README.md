@@ -50,7 +50,7 @@ flowchart LR
   `review_score <= 2` counted unreviewed orders as low reviews, because `BLANK() <= 2` is TRUE in DAX.
 - **Honest metric names.** "Product value" (item prices) and "payment value" are reported separately and never
   called revenue, because the data has no commission or cost fields.
-- **Repeat purchase = a later calendar day.** 869 of 2,888 people with 2+ orders only reordered on the same day
+- **Repeat purchase = a later calendar day.** 823 of 2,888 people with 2+ orders only reordered on the same day
   (split baskets). Counting them would overstate repeat purchase by ~40%.
 - **Cohorts respect the observation window.** A cohort that cannot yet be observed for N months shows blank, not 0%.
 - **Complete months only.** 2016 and 2018-09/10 are partial collection periods, so they are excluded from trends.

@@ -2,7 +2,7 @@
 --
 -- Person = customer_unique_id (customer_id is one per order and would show zero repeat buyers).
 -- Visit  = a calendar day with at least one valid order. Several orders on the same day are one visit
---          (869 people only "repeated" on their first day — a split basket, not a return).
+--          (823 people only "repeated" on their first day — a split basket, not a return).
 -- Population: valid orders, all months (a return may fall outside the complete window).
 -- Grain: one row per purchase-days bucket; days_first_to_second_visit is a summary repeated per row.
 

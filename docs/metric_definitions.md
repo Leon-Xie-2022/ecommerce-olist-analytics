@@ -54,6 +54,6 @@ Olist is a marketplace and the data has no commission, cost or margin fields.
 
 ### Why same-day orders are not repeat purchases
 
-869 of the 2,888 people with two or more valid orders placed all of them on the same day: one shopping session
+823 of the 2,888 people with two or more valid orders placed all of them on the same day: one shopping session
 split into several orders, for example by seller. Counting those people as repeat customers would raise the repeat
 rate from 2.2% to 3.0% of customers (+40%).

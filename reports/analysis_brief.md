@@ -27,7 +27,7 @@ pattern at a smaller scale (24% low reviews; 45% of those comments mention missi
 
 **3. Almost every customer buys only once.**
 Only **2.2%** of customers bought on two or more different days. Same-day extra orders are excluded, because they are
-split baskets, not returns. Since mid-2017, returning customers have accounted for 1.7–3.4% of monthly orders. The
+split baskets, not returns. Since mid-2017, returning customers have accounted for 1.8–3.4% of monthly orders. The
 12-month repeat rate per cohort is 2.7–3.8%. For those who do return, the median gap is **74 days**, and 55% return
 within 90 days.
 *(sql/metrics/07, 08, 11)*
