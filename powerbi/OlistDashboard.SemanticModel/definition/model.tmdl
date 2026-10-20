@@ -11,9 +11,14 @@ annotation __PBI_TimeIntelligenceEnabled = 0
 
 annotation PBI_QueryOrder = ["DataFolder", "fct_orders", "fct_order_items", "dim_customer", "dim_date", "cohort_retention"]
 
+annotation PBI_ProTooling = ["DevMode"]
+
 ref table fct_orders
 ref table fct_order_items
 ref table dim_customer
 ref table dim_date
 ref table cohort_retention
 ref table _Measures
+
+ref cultureInfo en-US
+

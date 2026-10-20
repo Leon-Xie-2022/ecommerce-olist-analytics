@@ -1,41 +1,49 @@
 table fct_order_items
+	lineageTag: 9f3a83d2-5d0f-4e41-918f-eb55402eaf94
 
 	column order_id
 		dataType: string
 		isHidden
+		lineageTag: 7c527732-93a3-43ed-a390-b42e2a27f1fe
 		summarizeBy: none
 		sourceColumn: order_id
 
 	column seller_id
 		dataType: string
 		isHidden
+		lineageTag: 35b9752a-2c4d-4721-bc42-24838dcf90c5
 		summarizeBy: none
 		sourceColumn: seller_id
 
 	column category
 		dataType: string
+		lineageTag: d134b6c9-8ed6-4a02-bd0f-d0da24262a56
 		summarizeBy: none
 		sourceColumn: category
 
 	column seller_state
 		dataType: string
+		lineageTag: 9f19185a-cd70-49e3-a31a-1fce4e7bdab6
 		summarizeBy: none
 		sourceColumn: seller_state
 
 	column is_valid
 		dataType: boolean
+		lineageTag: afbf114f-86c9-468c-a6e1-1dea526db119
 		summarizeBy: none
 		sourceColumn: is_valid
 
 	column price
 		dataType: double
 		formatString: #,0.00
+		lineageTag: c347b297-25aa-49d5-becf-53ec66eaa7dd
 		summarizeBy: none
 		sourceColumn: price
 
 	column freight_value
 		dataType: double
 		formatString: #,0.00
+		lineageTag: 04d496a7-1dc2-4221-b042-aadd05c558ad
 		summarizeBy: none
 		sourceColumn: freight_value
 

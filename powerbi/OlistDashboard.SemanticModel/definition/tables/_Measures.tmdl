@@ -1,101 +1,115 @@
 table _Measures
+	lineageTag: 050ea04b-27b5-4e5a-9ef7-302b7eb39c17
 
 	/// Orders excluding canceled and unavailable
 	measure 'Valid Orders' = CALCULATE(COUNTROWS(fct_orders), fct_orders[is_valid] = TRUE())
 		formatString: #,0
+		lineageTag: 9c727d2d-0959-4a8f-8a8e-7335e67f3e54
 
 	/// Sum of item prices of valid orders (BRL); not company revenue
 	measure 'Product Value' = CALCULATE(SUM(fct_orders[product_value]), fct_orders[is_valid] = TRUE())
 		formatString: #,0
+		lineageTag: 4ae34292-2d04-47a5-8588-f8182e571a3f
 
 	/// Freight charged on valid orders (BRL)
 	measure 'Freight Value' = CALCULATE(SUM(fct_orders[freight_value]), fct_orders[is_valid] = TRUE())
 		formatString: #,0
+		lineageTag: 846aee59-3c61-4bdd-8d6b-62b33be0fdc4
 
 	/// Average product value per valid order with items (BRL)
-	measure 'AOV' = ```
+	measure AOV =
 			DIVIDE(
 			    [Product Value],
 			    CALCULATE(COUNTROWS(fct_orders), fct_orders[is_valid] = TRUE(), fct_orders[n_items] > 0)
 			)
-			```
 		formatString: #,0.00
+		lineageTag: d4c885f8-864a-4c41-be2a-c709c3be4e32
 
 	/// Change in product value vs the previous month
-	measure 'Product Value MoM %' = ```
+	measure 'Product Value MoM %' =
 			VAR CurrentValue = [Product Value]
 			VAR PreviousValue = CALCULATE([Product Value], DATEADD(dim_date[date], -1, MONTH))
 			RETURN
 			    IF(NOT ISBLANK(PreviousValue), DIVIDE(CurrentValue - PreviousValue, PreviousValue))
-			```
 		formatString: 0.0%
+		lineageTag: e363bd0f-e747-426a-bb2f-71fce1fe4691
 
 	/// Status delivered and a recorded delivery date
 	measure 'Delivered Orders' = CALCULATE(COUNTROWS(fct_orders), fct_orders[is_delivered] = TRUE())
 		formatString: #,0
+		lineageTag: 1ad8db6c-415d-4e74-b6d4-3c5b63033ac8
 
 	/// Delivered after the estimated date (calendar days)
 	measure 'Late Orders' = CALCULATE(COUNTROWS(fct_orders), fct_orders[is_late] = TRUE())
 		formatString: #,0
+		lineageTag: 82a011a7-cf23-496e-862e-36d0d8d6caa9
 
 	/// Late orders / delivered orders
 	measure 'Late Rate' = DIVIDE([Late Orders], [Delivered Orders])
 		formatString: 0.0%
+		lineageTag: 08f62ad6-ed96-446d-9685-7e4b290f1461
 
 	/// Days from purchase to delivery
 	measure 'Avg Delivery Days' = CALCULATE(AVERAGE(fct_orders[delivery_days]), fct_orders[is_delivered] = TRUE())
 		formatString: 0.0
+		lineageTag: 16f9bdc1-b2a6-49ce-b65d-16b8304e2c1d
 
 	/// Average 1-5 review score of valid reviewed orders
 	measure 'Avg Review Score' = CALCULATE(AVERAGE(fct_orders[review_score]), fct_orders[is_valid] = TRUE())
 		formatString: 0.00
-
-	/// Average review score of delivered orders; used with delivery outcome
-	measure 'Avg Review Score (Delivered)' = CALCULATE(AVERAGE(fct_orders[review_score]), fct_orders[is_delivered] = TRUE())
-		formatString: 0.00
+		lineageTag: 2dfad517-d4c6-4fef-99d8-52b11aaecb4b
 
 	/// Share of 1-2 star reviews among reviewed valid orders
-	measure 'Low Review Share' = ```
+	measure 'Low Review Share' =
 			DIVIDE(
 			    CALCULATE(COUNTROWS(fct_orders), fct_orders[is_valid] = TRUE(), fct_orders[review_score] IN {1, 2}),
 			    CALCULATE(COUNT(fct_orders[review_score]), fct_orders[is_valid] = TRUE())
 			)
-			```
 		formatString: 0.0%
+		lineageTag: 40caffd2-ca1b-4879-b7b0-241bbd06a1a6
 
 	/// Distinct people (customer_unique_id) with a valid order
-	measure 'Customers' = CALCULATE(DISTINCTCOUNT(fct_orders[customer_unique_id]), fct_orders[is_valid] = TRUE())
+	measure Customers = CALCULATE(DISTINCTCOUNT(fct_orders[customer_unique_id]), fct_orders[is_valid] = TRUE())
 		formatString: #,0
+		lineageTag: ba16002b-dbfb-44a2-b491-07e979a71839
 
 	/// Valid orders placed on a later day than the customer's first purchase
-	measure 'Returning Order Share' = ```
+	measure 'Returning Order Share' =
 			DIVIDE(
 			    CALCULATE(COUNTROWS(fct_orders), fct_orders[is_return_order] = TRUE()),
 			    [Valid Orders]
 			)
-			```
 		formatString: 0.0%
+		lineageTag: a2a45782-811e-4ad8-a4b8-ae52c9f87050
 
 	/// Customers (cohorts 2017-01..2018-08) who bought on 2+ different days
-	measure 'Repeat Customer Share' = ```
+	measure 'Repeat Customer Share' =
 			DIVIDE(
 			    CALCULATE(COUNTROWS(dim_customer), dim_customer[is_repeat_customer] = TRUE()),
 			    COUNTROWS(dim_customer)
 			)
-			```
 		formatString: 0.0%
+		lineageTag: 67061b77-2b2e-444b-801c-27d6d1939db4
 
 	/// Item-level product value, for category and seller analysis
 	measure 'Item Product Value' = CALCULATE(SUM(fct_order_items[price]), fct_order_items[is_valid] = TRUE())
 		formatString: #,0
+		lineageTag: 19a2504b-39c4-40df-83d9-aa29444aedbb
 
 	/// Category product value / all categories
 	measure 'Category Share' = DIVIDE([Item Product Value], CALCULATE([Item Product Value], ALL(fct_order_items[category])))
 		formatString: 0.0%
+		lineageTag: 8f919244-ac4e-4af0-95fd-3021baa1d7d6
+
+	/// Average review score of delivered orders; used with delivery outcome
+	measure 'Avg Review Score (Delivered)' = CALCULATE(AVERAGE(fct_orders[review_score]), fct_orders[is_delivered] = TRUE())
+		formatString: 0.00
+		lineageTag: a5a56114-fe30-442b-b964-610d9b998b2a
 
 	column Value
 		isHidden
 		formatString: 0
+		lineageTag: e9a4fee6-1ccd-4637-89c2-e8c60b70e72b
 		summarizeBy: none
 		isNameInferred
 		sourceColumn: [Value]

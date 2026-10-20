@@ -1,35 +1,42 @@
 table fct_orders
+	lineageTag: 8bd9b5a1-9151-48f0-8c5b-6375f2637567
 
 	column order_id
 		dataType: string
 		isHidden
+		lineageTag: 74b993fb-1656-4d5c-b706-aba95802bc49
 		summarizeBy: none
 		sourceColumn: order_id
 
 	column customer_unique_id
 		dataType: string
 		isHidden
+		lineageTag: bfcf3e4f-eb35-455a-bb4b-4688cd138003
 		summarizeBy: none
 		sourceColumn: customer_unique_id
 
 	column customer_state
 		dataType: string
+		lineageTag: 88979390-9a7e-41be-aa62-cdcfefe6bb13
 		summarizeBy: none
 		sourceColumn: customer_state
 
 	column order_status
 		dataType: string
+		lineageTag: 785b443a-c71b-4b62-bd36-6b8bd92aafe1
 		summarizeBy: none
 		sourceColumn: order_status
 
 	column is_valid
 		dataType: boolean
+		lineageTag: b2fbeebf-95dd-4460-ba28-1ae8ecf1955c
 		summarizeBy: none
 		sourceColumn: is_valid
 
 	column purchase_date
 		dataType: dateTime
 		formatString: yyyy-mm-dd
+		lineageTag: 3a4e1fb6-605d-49ea-b70e-f07a2decbd68
 		summarizeBy: none
 		sourceColumn: purchase_date
 
@@ -38,79 +45,93 @@ table fct_orders
 	column n_items
 		dataType: int64
 		formatString: 0
+		lineageTag: 80c855ec-d1d2-47cc-90ff-54b65caef25a
 		summarizeBy: none
 		sourceColumn: n_items
 
 	column product_value
 		dataType: double
 		formatString: #,0.00
+		lineageTag: b5beb886-a464-499d-ae40-9890639e4669
 		summarizeBy: none
 		sourceColumn: product_value
 
 	column freight_value
 		dataType: double
 		formatString: #,0.00
+		lineageTag: d8e5ffe2-7414-4deb-be4a-b214f22be282
 		summarizeBy: none
 		sourceColumn: freight_value
 
 	column payment_value
 		dataType: double
 		formatString: #,0.00
+		lineageTag: a23c2765-6cbf-47d5-b11b-6d90f380395f
 		summarizeBy: none
 		sourceColumn: payment_value
 
 	column main_payment_type
 		dataType: string
+		lineageTag: 8ff2e166-f571-413c-bbcb-a4bd43dc772b
 		summarizeBy: none
 		sourceColumn: main_payment_type
 
 	column max_installments
 		dataType: int64
 		formatString: 0
+		lineageTag: 9abf345c-e29c-4dbf-8c9a-0332005f1591
 		summarizeBy: none
 		sourceColumn: max_installments
 
 	column is_delivered
 		dataType: boolean
+		lineageTag: 547679f7-64df-41a5-8910-fefa0f834b53
 		summarizeBy: none
 		sourceColumn: is_delivered
 
 	column delivery_days
 		dataType: int64
 		formatString: 0
+		lineageTag: 3353959b-7db3-453f-a97f-01865b1190cb
 		summarizeBy: none
 		sourceColumn: delivery_days
 
 	column promised_days
 		dataType: int64
 		formatString: 0
+		lineageTag: a492e561-f6ec-425d-912a-d90f4fbf4afd
 		summarizeBy: none
 		sourceColumn: promised_days
 
 	column days_late
 		dataType: int64
 		formatString: 0
+		lineageTag: 97fab391-8603-4e6c-8688-d4da5fa38585
 		summarizeBy: none
 		sourceColumn: days_late
 
 	column review_score
 		dataType: int64
 		formatString: 0
+		lineageTag: 1c8343c7-327b-46d6-afad-5fcd94e498a2
 		summarizeBy: none
 		sourceColumn: review_score
 
 	column is_late
 		dataType: boolean
+		lineageTag: 33a412b5-d4ab-4137-ab0a-0b202a18d630
 		summarizeBy: none
 		sourceColumn: is_late
 
 	column delivery_bucket
 		dataType: string
+		lineageTag: 963b91e9-d632-44fc-be4a-53c744fca116
 		summarizeBy: none
 		sourceColumn: delivery_bucket
 
 	column is_return_order
 		dataType: boolean
+		lineageTag: 117d300b-600f-4680-956d-eaae21c3f648
 		summarizeBy: none
 		sourceColumn: is_return_order
 

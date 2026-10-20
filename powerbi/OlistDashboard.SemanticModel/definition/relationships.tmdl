@@ -9,3 +9,4 @@ relationship a1f0b555-5381-5f63-93a2-0a9d0183a1f7
 relationship 6f52427c-0d2b-5c39-87a0-d3b0f6a9c638
 	fromColumn: fct_orders.customer_unique_id
 	toColumn: dim_customer.customer_unique_id
+

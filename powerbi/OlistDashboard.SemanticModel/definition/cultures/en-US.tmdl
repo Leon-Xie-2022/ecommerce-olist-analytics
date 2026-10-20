@@ -1,0 +1,137 @@
+cultureInfo en-US
+
+	linguisticMetadata =
+			{
+			  "Version": "2.0.0",
+			  "Language": "en-US",
+			  "Entities": {
+			    "cohort_retention.cohort": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "cohort_retention",
+			          "ConceptualProperty": "cohort"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Cohort": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "cohort_retention.cohort_size": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "cohort_retention",
+			          "ConceptualProperty": "cohort_size"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Customers": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "cohort_retention.repeat_1m_pct": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "cohort_retention",
+			          "ConceptualProperty": "repeat_1m_pct"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "1 month %": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "cohort_retention.repeat_3m_pct": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "cohort_retention",
+			          "ConceptualProperty": "repeat_3m_pct"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "3 months %": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "cohort_retention.repeat_6m_pct": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "cohort_retention",
+			          "ConceptualProperty": "repeat_6m_pct"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "6 months %": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "cohort_retention.repeat_12m_pct": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "cohort_retention",
+			          "ConceptualProperty": "repeat_12m_pct"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "12 months %": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    }
+			  }
+			}
+		contentType: json
+

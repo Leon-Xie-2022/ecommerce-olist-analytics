@@ -79,7 +79,13 @@ and state, review score by delivery outcome) and **Customers** (returning-order 
 The project is saved in the text-based PBIP format ([`powerbi/`](powerbi)), so the model, relationships and DAX
 can be reviewed in Git. Model details and DAX: [`docs/powerbi.md`](docs/powerbi.md).
 
-*Screenshots: see [`reports/figures/`](reports/figures).*
+![Overview page](reports/figures/dashboard_overview.png)
+![Delivery and reviews page](reports/figures/dashboard_delivery.png)
+![Customers page](reports/figures/dashboard_customers.png)
+
+Every card was reconciled with SQL ([`sql/checks/powerbi_expected_kpis.sql`](sql/checks/powerbi_expected_kpis.sql)).
+That check caught a DAX bug: `review_score <= 2` also counts unreviewed orders, because `BLANK() <= 2` is TRUE in
+DAX. It is fixed with `IN {1, 2}`.
 
 ## Reproduce
 
