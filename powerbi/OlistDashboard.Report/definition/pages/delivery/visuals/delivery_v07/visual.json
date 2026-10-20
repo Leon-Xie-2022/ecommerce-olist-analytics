@@ -38,13 +38,13 @@
                 "Measure": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "Measures"
+                      "Entity": "_Measures"
                     }
                   },
                   "Property": "Avg Review Score"
                 }
               },
-              "queryRef": "Measures.Avg Review Score",
+              "queryRef": "_Measures.Avg Review Score",
               "nativeQueryRef": "Avg Review Score"
             }
           ]

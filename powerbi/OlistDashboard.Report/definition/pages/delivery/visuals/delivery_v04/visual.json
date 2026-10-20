@@ -20,13 +20,13 @@
                 "Measure": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "Measures"
+                      "Entity": "_Measures"
                     }
                   },
                   "Property": "Late Rate"
                 }
               },
-              "queryRef": "Measures.Late Rate",
+              "queryRef": "_Measures.Late Rate",
               "nativeQueryRef": "Late Rate"
             }
           ]

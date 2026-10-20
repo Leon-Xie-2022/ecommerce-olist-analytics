@@ -1,4 +1,4 @@
-table Measures
+table _Measures
 
 	/// Orders excluding canceled and unavailable
 	measure 'Valid Orders' = CALCULATE(COUNTROWS(fct_orders), fct_orders[is_valid] = TRUE())
@@ -96,7 +96,7 @@ table Measures
 		isNameInferred
 		sourceColumn: [Value]
 
-	partition Measures = calculated
+	partition _Measures = calculated
 		mode: import
 		source = {0}
 

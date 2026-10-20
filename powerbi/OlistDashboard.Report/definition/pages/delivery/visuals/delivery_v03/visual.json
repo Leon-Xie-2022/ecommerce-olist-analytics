@@ -20,13 +20,13 @@
                 "Measure": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "Measures"
+                      "Entity": "_Measures"
                     }
                   },
                   "Property": "Avg Delivery Days"
                 }
               },
-              "queryRef": "Measures.Avg Delivery Days",
+              "queryRef": "_Measures.Avg Delivery Days",
               "nativeQueryRef": "Avg Delivery Days"
             }
           ]

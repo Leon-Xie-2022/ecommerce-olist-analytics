@@ -38,13 +38,13 @@
                 "Measure": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "Measures"
+                      "Entity": "_Measures"
                     }
                   },
                   "Property": "Item Product Value"
                 }
               },
-              "queryRef": "Measures.Item Product Value",
+              "queryRef": "_Measures.Item Product Value",
               "nativeQueryRef": "Item Product Value"
             }
           ]
@@ -57,7 +57,7 @@
               "Measure": {
                 "Expression": {
                   "SourceRef": {
-                    "Entity": "Measures"
+                    "Entity": "_Measures"
                   }
                 },
                 "Property": "Item Product Value"

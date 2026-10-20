@@ -16,4 +16,4 @@ ref table fct_order_items
 ref table dim_customer
 ref table dim_date
 ref table cohort_retention
-ref table Measures
+ref table _Measures

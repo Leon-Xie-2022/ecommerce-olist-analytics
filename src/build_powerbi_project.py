@@ -20,6 +20,7 @@ MODEL_DIR = PBI_DIR / f"{NAME}.SemanticModel"
 REPORT_DIR = PBI_DIR / f"{NAME}.Report"
 DATA_FOLDER = str(PROCESSED_DIR / "powerbi") + "\\"
 BASE_THEME = "CY24SU10"
+MEASURE_TABLE = "_Measures"  # "Measures" is a reserved table name in Power BI
 
 SCHEMA = "https://developer.microsoft.com/json-schemas/fabric"
 
@@ -207,7 +208,7 @@ def tmdl_table(table, row_filter, columns):
 
 
 def tmdl_measures():
-    out = ["table Measures", ""]
+    out = [f"table {MEASURE_TABLE}", ""]
     for name, (dax, fmt, description) in MEASURES.items():
         out.append(f"\t/// {description}")
         if "\n" in dax:
@@ -225,7 +226,7 @@ def tmdl_measures():
         "\t\tisNameInferred",
         "\t\tsourceColumn: [Value]",
         "",
-        "\tpartition Measures = calculated",
+        f"	partition {MEASURE_TABLE} = calculated",
         "\t\tmode: import",
         "\t\tsource = {0}",
         "",
@@ -257,7 +258,7 @@ def build_model():
     write_json(MODEL_DIR / "definition.pbism", {"version": "4.1", "settings": {}})
     write_json(MODEL_DIR / ".platform", platform("SemanticModel"))
     write(d / "database.tmdl", "database\n\tcompatibilityLevel: 1567\n")
-    refs = "\n".join(f"ref table {t}" for t in [*TABLES, "Measures"])
+    refs = "\n".join(f"ref table {t}" for t in [*TABLES, MEASURE_TABLE])
     query_order = json.dumps(["DataFolder", *TABLES])
     write(d / "model.tmdl",
           "model Model\n\tculture: en-US\n\tdefaultPowerBIDataSourceVersion: powerBI_V3\n"
@@ -276,7 +277,7 @@ def build_model():
     write(d / "relationships.tmdl", "\n".join(rels))
     for table, (row_filter, columns) in TABLES.items():
         write(d / "tables" / f"{table}.tmdl", tmdl_table(table, row_filter, columns))
-    write(d / "tables" / "Measures.tmdl", tmdl_measures())
+    write(d / "tables" / f"{MEASURE_TABLE}.tmdl", tmdl_measures())
 
 
 # --------------------------------------------------------------------------------------------
@@ -292,7 +293,7 @@ def column(table, col):
 
 
 def measure(name):
-    return {"Measure": {"Expression": {"SourceRef": {"Entity": "Measures"}}, "Property": name}}
+    return {"Measure": {"Expression": {"SourceRef": {"Entity": MEASURE_TABLE}}, "Property": name}}
 
 
 def projection(field):

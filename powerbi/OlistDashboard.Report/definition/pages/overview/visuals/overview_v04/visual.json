@@ -20,13 +20,13 @@
                 "Measure": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "Measures"
+                      "Entity": "_Measures"
                     }
                   },
                   "Property": "AOV"
                 }
               },
-              "queryRef": "Measures.AOV",
+              "queryRef": "_Measures.AOV",
               "nativeQueryRef": "AOV"
             }
           ]

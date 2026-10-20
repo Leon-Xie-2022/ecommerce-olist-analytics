@@ -15,7 +15,7 @@ Star schema with one order-level fact. Only complete months (2017-01 to 2018-08)
 | dim_date | one day | 608 | Date table (marked), month axis |
 | dim_customer | one person (`customer_unique_id`) | cohorts 2017-01..2018-08 | Repeat-customer share |
 | cohort_retention | one cohort | 20 | Pre-computed in SQL (`sql/metrics/08`), keeps the observation-window logic |
-| Measures | — | — | All DAX measures |
+| _Measures | — | — | All DAX measures (`Measures` is a reserved name) |
 
 Relationships (all many-to-one, single direction):
 
@@ -30,7 +30,7 @@ order → item relationship cannot double count.
 
 ## Measures (DAX)
 
-All measures are in [`Measures.tmdl`](../powerbi/OlistDashboard.SemanticModel/definition/tables/Measures.tmdl). The key ones:
+All measures are in [`_Measures.tmdl`](../powerbi/OlistDashboard.SemanticModel/definition/tables/_Measures.tmdl). The key ones:
 
 ```dax
 Valid Orders  = CALCULATE(COUNTROWS(fct_orders), fct_orders[is_valid] = TRUE())

@@ -20,13 +20,13 @@
                 "Measure": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "Measures"
+                      "Entity": "_Measures"
                     }
                   },
                   "Property": "Returning Order Share"
                 }
               },
-              "queryRef": "Measures.Returning Order Share",
+              "queryRef": "_Measures.Returning Order Share",
               "nativeQueryRef": "Returning Order Share"
             }
           ]

@@ -20,13 +20,13 @@
                 "Measure": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "Measures"
+                      "Entity": "_Measures"
                     }
                   },
                   "Property": "Repeat Customer Share"
                 }
               },
-              "queryRef": "Measures.Repeat Customer Share",
+              "queryRef": "_Measures.Repeat Customer Share",
               "nativeQueryRef": "Repeat Customer Share"
             }
           ]
