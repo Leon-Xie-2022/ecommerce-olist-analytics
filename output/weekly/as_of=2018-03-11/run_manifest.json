@@ -1,6 +1,6 @@
 {
-  "run_id": "2018-03-11_20261020T204655",
-  "started_at": "2026-10-20T20:46:55+08:00",
+  "run_id": "2018-03-11_20261020T210449",
+  "started_at": "2026-10-20T21:04:49+08:00",
   "as_of_date": "2018-03-11",
   "window": {
     "start": "2018-03-05",
@@ -20,7 +20,7 @@
     "mart_db": "data/processed/olist.duckdb",
     "output_dir": "output/weekly"
   },
-  "code_version": "cc0bb36+uncommitted",
+  "code_version": "176c59d+uncommitted",
   "inputs": {
     "orders.parquet": {
       "sha256": "c789a6467a47f256531183b9bce342f95d182cfb297275eae66fedac4cf34b97"
@@ -62,5 +62,5 @@
     "primary_keys_unique": "PASS",
     "reconciliation": "15/15 PASS"
   },
-  "seconds": 1.6
+  "seconds": 1.72
 }
