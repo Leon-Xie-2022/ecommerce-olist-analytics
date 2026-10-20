@@ -99,7 +99,7 @@ produce a weekly summary, a route diagnosis and a ranked follow-up list of overd
 them, and load them into Excel with Power Query.
 
 ```powershell
-python src/weekly_report.py --as-of 2018-03-18   # SQL outputs + run manifest; publishes only if 15 checks pass
+python src/weekly_report.py --as-of 2018-03-18   # SQL outputs + run manifest; publishes only if 17 checks pass
 python src/check_weekly.py                        # re-run, bad input, folder-in-use and no-future-data checks
 ```
 
@@ -110,8 +110,9 @@ Then open `excel/olist_weekly_ops.xlsx` and click **Data → Refresh All**.
   identical results. Cancellations have no date, so the follow-up list is a historical diagnostic list.
 - **Two populations.** Deliveries completed this week (final on-time/late outcome) are kept apart from open
   orders at the cut-off; orders not yet due are "outcome unknown", never on time.
-- **Safe re-runs.** Same inputs and settings give byte-identical files; a missing file or column, a duplicate
-  key or a locked folder stops the run and leaves the last good output in place.
+- **Safe re-runs.** Same inputs and settings give byte-identical files. A missing, corrupt or duplicated input,
+  a reconciliation failure or a locked folder stops the run and leaves the last good output in place; the
+  period folder and `latest/` are swapped together or not at all.
 - **Excel refresh tested** by publishing two weeks in turn and running Refresh All through Excel automation;
   every table and the pivot matched the CSVs. A manual click-through by a user is still open.
 

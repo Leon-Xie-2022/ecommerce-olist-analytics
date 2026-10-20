@@ -17,13 +17,15 @@ Independent practice with simulated requirements; historical replay, not a live 
 ```powershell
 python src/weekly_report.py --as-of 2018-03-11     # one period -> output/weekly/as_of=2018-03-11/ + latest/
 python src/weekly_report.py --as-of 2018-03-18     # next period
-python src/check_weekly.py                          # 8 scripted checks (temporary folders)
+python src/check_weekly.py                          # 14 scripted checks (temporary folders)
 python src/verify_excel_refresh.py                  # Excel desktop: Refresh All per period, compare with CSV
 ```
 
 Prerequisite: the main pipeline (`clean.py`, `build_db.py`) has been run. Parameters are in
 `config/weekly_report.toml`; `--set key=value --label NAME` makes a what-if run under `what_if/NAME/`.
-Exit codes: 0 published, 2 input problem, 3 reconciliation failed, 4 output folder in use.
+Exit codes: 0 published, 2 configuration or input problem (missing, unreadable or duplicated data, invalid
+parameters), 3 reconciliation failed, 4 output folder in use (both folders rolled back), 5 unexpected
+data/database error. Every attempt, failed or not, is a line in `output/weekly/run_log.csv`.
 
 Excel: open `excel/olist_weekly_ops.xlsx` from inside the project folder and click **Data → Refresh All**.
 The yellow cell `OutputFolder` on the Read Me sheet points to `..\output\weekly\latest\` relative to the
@@ -42,7 +44,7 @@ product_value).
    are slipping, using only what was known that day." Show `requirements.md`, mention it is simulated.
 2. **(40 s) Time rules.** Show `00_point_in_time.sql`: future events set to NULL, `order_status` never read
    because it is the October 2018 status. Mention the snapshot test that gives identical results.
-3. **(40 s) Run two weeks.** Run the command for 2018-03-11 and 2018-03-18; point at "15/15 reconciliation
+3. **(40 s) Run two weeks.** Run the command for 2018-03-11 and 2018-03-18; point at "17/17 reconciliation
    checks" and the two output folders. Re-run one: same files, no duplicates.
 4. **(40 s) Excel.** Open the workbook, Refresh All, show the cut-off date change on Read Me, the Weekly Summary
    (late rate 7.8% → 12.3%, overdue orders 356 → 529), the Exceptions filters and the pivot.
