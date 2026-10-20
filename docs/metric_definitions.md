@@ -12,7 +12,7 @@ Olist is a marketplace and the data has no commission, cost or margin fields.
 | Valid order | `order_status NOT IN ('canceled', 'unavailable')` | Canceled and unavailable orders never became sales; 603 of the 609 unavailable orders have no items at all |
 | Delivered order | `order_status = 'delivered'` and `order_delivered_customer_date IS NOT NULL` | 8 delivered orders have no delivery date and cannot be timed |
 
-## Metrics in stage 1
+## Core metrics
 
 | # | Metric | Formula | Population | SQL |
 |---|---|---|---|---|
@@ -37,3 +37,23 @@ Olist is a marketplace and the data has no commission, cost or margin fields.
   orders not yet delivered is 0.8–4.7% in every complete month, with no rise at the end of the data,
   so the shorter delivery times in mid-2018 are not just missing slow orders.
 - **Average vs median.** Order value and delivery days are right-skewed, so medians are reported next to averages.
+
+## Customer and mix metrics
+
+| Metric | Definition | SQL |
+|---|---|---|
+| Person | `customer_unique_id` (`customer_id` is one per order) | — |
+| Return order | Valid order on a later calendar day than the person's first valid order (`fct_orders.is_return_order`) | `sql/mart/01_fct_orders.sql` |
+| Repeat customer | Person with valid orders on 2+ different calendar days | `sql/mart/03_dim_customer.sql` |
+| Cohort | Month of a person's first valid order | `sql/metrics/08_cohort_retention.sql` |
+| Cohort repeat rate (N months) | Share of the cohort with a return order by the end of month N after the cohort month; blank if month N is after 2018-08 | same |
+| Main payment type | Type of the order's largest payment row | `sql/mart/01_fct_orders.sql` |
+| Delivery bucket | Days between delivery date and estimated date, in 6 bands (10+ early … 8+ late) | same |
+| Category share | Category product value / all categories, items of valid orders | `sql/metrics/04_category_mix.sql` |
+| Seller decile | Sellers ranked by product value, split into 10 equal-count groups (`NTILE`) | `sql/metrics/09_seller_concentration.sql` |
+
+### Why same-day orders are not repeat purchases
+
+869 of the 2,888 people with two or more valid orders placed all of them on the same day: one shopping session
+split into several orders, for example by seller. Counting those people as repeat customers would raise the repeat
+rate from 2.2% to 3.0% of customers (+40%).
