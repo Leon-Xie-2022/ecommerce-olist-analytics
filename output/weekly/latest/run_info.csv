@@ -1,5 +1,5 @@
 item,value
-Run ID,2018-03-18_20261020T225846
+Run ID,2018-03-18_20261021T013627
 Cut-off date (as_of_date),2018-03-18
 Window start (inclusive),2018-03-12
 Window end (inclusive),2018-03-18
@@ -11,8 +11,8 @@ Parameter: max_overdue_days,30
 Parameter: p1_min_days_overdue,8
 Parameter: p2_min_days_overdue,4
 Reconciliation checks passed,17/17
-Code version (git),cd94e5c
-Generated at,2026-10-20T22:58:46+08:00
+Code version (git),7f213fb
+Generated at,2026-10-21T01:36:27+08:00
 Input SHA-256: orders.parquet,c789a6467a47f256531183b9bce342f95d182cfb297275eae66fedac4cf34b97
 Input SHA-256: order_items.parquet,8de089e06ab2caa4498053d484701ed92668affdd8f54412d2cf4ac8b620a5b0
 Input SHA-256: payments.parquet,d76219439f5d9f05cdd2a8202f7f2ab9f2040a4b8f2caf3264b41fbe9646320b

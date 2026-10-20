@@ -35,13 +35,13 @@ fixing four defects found in code review (section D).
 | B2 | Publish 2018-03-11, Refresh All via Excel COM | Read Me shows 2018-03-11; all values = CSV | 13/13 comparisons match | `evidence/excel_refresh_results.md` step 1 | Pass |
 | B3 | Publish 2018-03-18, Refresh All via Excel COM | New period appears; tables and pivot update; values = CSV | 13/13 match; pivot total 602 orders / BRL 83,189.63 | same file, step 2 | Pass |
 | B4 | Formats readable (dates, BRL, %, filters) | Dates yyyy-mm-dd, money 2 dp, rates %, filter buttons | As expected | `reports/figures/excel_*.png` | Pass |
-| B5 | **User opens the workbook and clicks Data > Refresh All by hand** | Same as B3 | — | to be recorded by the user | **Not executed** |
+| B5 | User opens the workbook and clicks Data > Refresh All by hand (2026-10-21) | Publish 2018-03-11, refresh: Read Me shows 2018-03-11 and 17 of 17 PASS; publish 2018-03-18, refresh: date changes, late rate 7.8% -> 12.3% | As expected, reported by the user; both runs SUCCESS in run_log.csv | user report; `output/weekly/run_log.csv` (2026-10-21 lines) | Pass |
 | B6 | **Workbook opened from another folder / another PC** | `OutputFolder` formula resolves to that copy's `output\weekly\latest\` | — | — | **Not executed** |
-| B7 | **Privacy-level prompt on first manual refresh** | No prompt, or prompt answered once | Not seen under COM automation; may appear in the UI | — | **Not executed** |
+| B7 | Security / privacy prompts on manual refresh | Refresh completes, at most a one-time prompt | Refresh completed in the user's Excel; no blocking prompt reported. Excel asks to save on close (expected: refresh changes the file) | user report | Pass |
 
 B2–B3 use COM automation (`Workbook.RefreshAll()`, the command behind the Refresh All button) and read the
 values back from the sheets. This is real Excel and real Power Query, but it is not the same as a person
-clicking the button, so B5 stays open until the user does it.
+clicking the button, so the user repeated it by hand on 2026-10-21 (B5, B7). After a manual save the workbook again caches the local folder path in the OutputFolder cell; it is stripped before committing (`strip_local_paths` in `src/verify_excel_refresh.py`).
 
 ## D. Defects found in code review (2026-10-20) and fixed
 
