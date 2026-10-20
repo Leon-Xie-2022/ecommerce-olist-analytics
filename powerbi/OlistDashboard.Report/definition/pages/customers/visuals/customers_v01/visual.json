@@ -3,10 +3,10 @@
   "name": "customers_v01",
   "position": {
     "x": 24,
-    "y": 92,
+    "y": 96,
     "z": 1000,
-    "height": 96,
-    "width": 316,
+    "height": 112,
+    "width": 400,
     "tabOrder": 1000
   },
   "visual": {
@@ -32,6 +32,41 @@
           ]
         }
       }
+    },
+    "objects": {
+      "labels": [
+        {
+          "properties": {
+            "fontSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "28D"
+                }
+              }
+            },
+            "labelDisplayUnits": {
+              "expr": {
+                "Literal": {
+                  "Value": "1D"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "categoryLabels": [
+        {
+          "properties": {
+            "fontSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "12D"
+                }
+              }
+            }
+          }
+        }
+      ]
     },
     "drillFilterOtherVisuals": true
   }

@@ -2,11 +2,11 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/1.5.0/schema.json",
   "name": "overview_v01",
   "position": {
-    "x": 1032,
-    "y": 20,
+    "x": 1036,
+    "y": 12,
     "z": 1000,
-    "height": 60,
-    "width": 224,
+    "height": 76,
+    "width": 220,
     "tabOrder": 1000
   },
   "visual": {
@@ -46,6 +46,19 @@
             }
           }
         }
+      ],
+      "header": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
       ]
     },
     "visualContainerObjects": {
@@ -63,6 +76,13 @@
               "expr": {
                 "Literal": {
                   "Value": "'Customer state'"
+                }
+              }
+            },
+            "fontSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "12D"
                 }
               }
             }

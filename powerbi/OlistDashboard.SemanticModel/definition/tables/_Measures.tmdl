@@ -50,10 +50,14 @@ table _Measures
 	measure 'Avg Review Score' = CALCULATE(AVERAGE(fct_orders[review_score]), fct_orders[is_valid] = TRUE())
 		formatString: 0.00
 
+	/// Average review score of delivered orders; used with delivery outcome
+	measure 'Avg Review Score (Delivered)' = CALCULATE(AVERAGE(fct_orders[review_score]), fct_orders[is_delivered] = TRUE())
+		formatString: 0.00
+
 	/// Share of 1-2 star reviews among reviewed valid orders
 	measure 'Low Review Share' = ```
 			DIVIDE(
-			    CALCULATE(COUNTROWS(fct_orders), fct_orders[is_valid] = TRUE(), fct_orders[review_score] <= 2),
+			    CALCULATE(COUNTROWS(fct_orders), fct_orders[is_valid] = TRUE(), fct_orders[review_score] IN {1, 2}),
 			    CALCULATE(COUNT(fct_orders[review_score]), fct_orders[is_valid] = TRUE())
 			)
 			```

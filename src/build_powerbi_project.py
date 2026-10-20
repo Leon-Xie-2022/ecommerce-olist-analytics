@@ -132,9 +132,13 @@ MEASURES = {
     "Avg Review Score": (
         "CALCULATE(AVERAGE(fct_orders[review_score]), fct_orders[is_valid] = TRUE())",
         "0.00", "Average 1-5 review score of valid reviewed orders"),
+    "Avg Review Score (Delivered)": (
+        "CALCULATE(AVERAGE(fct_orders[review_score]), fct_orders[is_delivered] = TRUE())",
+        "0.00", "Average review score of delivered orders; used with delivery outcome"),
+    # IN {1, 2} rather than <= 2: in DAX, BLANK() <= 2 is TRUE, which would count unreviewed orders.
     "Low Review Share": (
         "DIVIDE(\n"
-        "    CALCULATE(COUNTROWS(fct_orders), fct_orders[is_valid] = TRUE(), fct_orders[review_score] <= 2),\n"
+        "    CALCULATE(COUNTROWS(fct_orders), fct_orders[is_valid] = TRUE(), fct_orders[review_score] IN {1, 2}),\n"
         "    CALCULATE(COUNT(fct_orders[review_score]), fct_orders[is_valid] = TRUE())\n)",
         "0.0%", "Share of 1-2 star reviews among reviewed valid orders"),
     "Customers": (
@@ -226,7 +230,7 @@ def tmdl_measures():
         "\t\tisNameInferred",
         "\t\tsourceColumn: [Value]",
         "",
-        f"	partition {MEASURE_TABLE} = calculated",
+        f"\tpartition {MEASURE_TABLE} = calculated",
         "\t\tmode: import",
         "\t\tsource = {0}",
         "",
@@ -296,35 +300,59 @@ def measure(name):
     return {"Measure": {"Expression": {"SourceRef": {"Entity": MEASURE_TABLE}}, "Property": name}}
 
 
-def projection(field):
+def projection(field, display=None):
     kind = "Column" if "Column" in field else "Measure"
     entity = field[kind]["Expression"]["SourceRef"]["Entity"]
     prop = field[kind]["Property"]
-    return {"field": field, "queryRef": f"{entity}.{prop}", "nativeQueryRef": prop}
+    proj = {"field": field, "queryRef": f"{entity}.{prop}", "nativeQueryRef": prop}
+    if display:
+        proj["displayName"] = display
+    return proj
+
+
+CHARTS = {"lineChart", "barChart", "columnChart"}
+
+# Card number formatting: (display units, decimals). Unlisted cards use the measure's format string.
+CARD_FORMAT = {
+    "Valid Orders": ("1D", None),
+    "Delivered Orders": ("1D", None),
+    "Customers": ("1D", None),
+    "Product Value": ("1000000D", "2L"),
+}
 
 
 class Page:
     def __init__(self, name, display_name):
         self.name, self.display_name, self.visuals = name, display_name, []
 
-    def add(self, visual_type, x, y, w, h, roles=None, sort=None, title=None, objects=None):
+    def add(self, visual_type, x, y, w, h, roles=None, sort=None, title=None, objects=None,
+            data_labels=False):
+        """roles: {role: [field or (field, display name)]}. Charts get axis titles hidden,
+        because the visual title already says what is plotted."""
         n = len(self.visuals)
         visual = {"visualType": visual_type}
         if roles:
-            query = {"queryState": {role: {"projections": [projection(f) for f in fields]}
-                                    for role, fields in roles.items()}}
+            query = {"queryState": {
+                role: {"projections": [projection(*f) if isinstance(f, tuple) else projection(f)
+                                       for f in fields]}
+                for role, fields in roles.items()}}
             if sort:
                 field, direction = sort
                 query["sortDefinition"] = {"sort": [{"field": field, "direction": direction}],
                                            "isDefaultSort": False}
             visual["query"] = query
+        objects = dict(objects or {})
+        if visual_type in CHARTS:
+            objects["categoryAxis"] = [{"properties": {"showAxisTitle": lit("false")}}]
+            objects["valueAxis"] = [{"properties": {"showAxisTitle": lit("false")}}]
+        if data_labels:
+            objects["labels"] = [{"properties": {"show": lit("true")}}]
         if objects:
             visual["objects"] = objects
-        container = {}
         if title:
-            container["title"] = [{"properties": {"show": lit("true"), "text": lit(f"'{title}'")}}]
-        if container:
-            visual["visualContainerObjects"] = container
+            visual["visualContainerObjects"] = {
+                "title": [{"properties": {"show": lit("true"), "text": lit(f"'{title}'"),
+                                          "fontSize": lit("12D")}}]}
         visual["drillFilterOtherVisuals"] = True
         self.visuals.append({
             "$schema": f"{SCHEMA}/item/report/definition/visualContainer/1.5.0/schema.json",
@@ -336,73 +364,86 @@ class Page:
     def title(self, text, subtitle):
         runs = [{"textRuns": [{"value": text, "textStyle": {"fontWeight": "bold", "fontSize": "20pt"}}]},
                 {"textRuns": [{"value": subtitle, "textStyle": {"fontSize": "10pt", "color": "#605E5C"}}]}]
-        self.add("textbox", 24, 12, 820, 70, objects={"general": [{"properties": {"paragraphs": runs}}]})
+        self.add("textbox", 24, 16, 980, 64, objects={"general": [{"properties": {"paragraphs": runs}}]})
 
-    def cards(self, names, y=92, x0=24, width=1232):
+    def cards(self, names, y=96, x0=24, width=1232):
         gap = 16
         w = (width - gap * (len(names) - 1)) // len(names)
         for i, name in enumerate(names):
-            self.add("card", x0 + i * (w + gap), y, w, 96, roles={"Values": [measure(name)]})
+            labels = {"fontSize": lit("28D")}
+            units, decimals = CARD_FORMAT.get(name, (None, None))
+            if units:
+                labels["labelDisplayUnits"] = lit(units)
+            if decimals:
+                labels["labelPrecision"] = lit(decimals)
+            self.add("card", x0 + i * (w + gap), y, w, 112, roles={"Values": [measure(name)]},
+                     objects={"labels": [{"properties": labels}],
+                              "categoryLabels": [{"properties": {"fontSize": lit("12D")}}]})
 
     def state_slicer(self):
-        self.add("slicer", 1032, 20, 224, 60, roles={"Values": [column("fct_orders", "customer_state")]},
-                 objects={"data": [{"properties": {"mode": lit("'Dropdown'")}}]},
+        self.add("slicer", 1036, 12, 220, 76, roles={"Values": [column("fct_orders", "customer_state")]},
+                 objects={"data": [{"properties": {"mode": lit("'Dropdown'")}}],
+                          "header": [{"properties": {"show": lit("false")}}]},
                  title="Customer state")
 
 
 SUBTITLE = "Olist public data (Brazil), valid orders, complete months 2017-01 to 2018-08. Values in BRL."
+TOP, BOTTOM = 224, 704  # chart area
 
 
 def build_pages():
     month = column("dim_date", "year_month")
+    half = (BOTTOM - TOP - 16) // 2
 
     overview = Page("overview", "Overview")
     overview.title("Orders & product value", SUBTITLE)
     overview.state_slicer()
     overview.cards(["Valid Orders", "Product Value", "AOV", "Late Rate", "Avg Review Score"])
-    overview.add("lineChart", 24, 204, 760, 500,
+    overview.add("lineChart", 24, TOP, 760, BOTTOM - TOP,
                  roles={"Category": [month], "Y": [measure("Product Value")]},
-                 sort=(month, "Ascending"), title="Product value by purchase month")
-    overview.add("barChart", 800, 204, 456, 500,
+                 sort=(month, "Ascending"), title="Product value by purchase month (BRL)")
+    overview.add("barChart", 800, TOP, 456, BOTTOM - TOP,
                  roles={"Category": [column("fct_order_items", "category")],
                         "Y": [measure("Item Product Value")]},
                  sort=(measure("Item Product Value"), "Descending"),
-                 title="Product value by category")
+                 title="Product value by category (BRL)")
 
     delivery = Page("delivery", "Delivery & Reviews")
     delivery.title("Delivery performance & reviews", SUBTITLE + " Late = delivered after the estimated date.")
     delivery.state_slicer()
     delivery.cards(["Delivered Orders", "Avg Delivery Days", "Late Rate", "Low Review Share"])
-    delivery.add("lineChart", 24, 204, 600, 240,
+    delivery.add("lineChart", 24, TOP, 600, half,
                  roles={"Category": [month], "Y": [measure("Late Rate")]},
                  sort=(month, "Ascending"), title="Late rate by purchase month")
     bucket = column("fct_orders", "delivery_bucket")
-    delivery.add("columnChart", 24, 456, 600, 248,
-                 roles={"Category": [bucket], "Y": [measure("Avg Review Score")]},
-                 sort=(bucket, "Ascending"),
-                 title="Average review score by delivery outcome (association, not causation)")
-    delivery.add("barChart", 640, 204, 616, 500,
+    delivery.add("columnChart", 24, TOP + half + 16, 600, half,
+                 roles={"Category": [bucket], "Y": [measure("Avg Review Score (Delivered)")]},
+                 sort=(bucket, "Ascending"), data_labels=True,
+                 title="Avg review score by delivery outcome (association, not causation)")
+    delivery.add("barChart", 640, TOP, 616, BOTTOM - TOP,
                  roles={"Category": [column("fct_orders", "customer_state")], "Y": [measure("Late Rate")]},
                  sort=(measure("Late Rate"), "Descending"), title="Late rate by customer state")
 
     customers = Page("customers", "Customers")
     customers.title("Customers & repeat purchase",
                     SUBTITLE + " Repeat = bought again on a later calendar day.")
-    customers.cards(["Customers", "Returning Order Share", "Repeat Customer Share"], width=980)
-    customers.add("lineChart", 24, 204, 600, 240,
+    customers.cards(["Customers", "Returning Order Share", "Repeat Customer Share"])
+    customers.add("lineChart", 24, TOP, 600, half,
                   roles={"Category": [month], "Y": [measure("Returning Order Share")]},
                   sort=(month, "Ascending"), title="Share of orders from returning customers")
     pay = column("fct_orders", "main_payment_type")
-    customers.add("barChart", 24, 456, 600, 248,
+    customers.add("barChart", 24, TOP + half + 16, 600, half,
                   roles={"Category": [pay], "Y": [measure("Valid Orders")]},
-                  sort=(measure("Valid Orders"), "Descending"), title="Valid orders by main payment type")
+                  sort=(measure("Valid Orders"), "Descending"), data_labels=True,
+                  title="Valid orders by main payment type")
     cohort = "cohort_retention"
-    customers.add("tableEx", 640, 204, 616, 500,
-                  roles={"Values": [column(cohort, c) for c in
-                                    ["cohort", "cohort_size", "repeat_1m_pct", "repeat_3m_pct",
-                                     "repeat_6m_pct", "repeat_12m_pct"]]},
+    headers = [("cohort", "Cohort"), ("cohort_size", "Customers"), ("repeat_1m_pct", "1 month %"),
+               ("repeat_3m_pct", "3 months %"), ("repeat_6m_pct", "6 months %"),
+               ("repeat_12m_pct", "12 months %")]
+    customers.add("tableEx", 640, TOP, 616, BOTTOM - TOP,
+                  roles={"Values": [(column(cohort, c), label) for c, label in headers]},
                   sort=(column(cohort, "cohort"), "Ascending"),
-                  title="Cohort repeat rate % (blank = not yet observable)")
+                  title="Cohort repeat rate: % who bought again within N months (blank = not yet observable)")
     return [overview, delivery, customers]
 
 

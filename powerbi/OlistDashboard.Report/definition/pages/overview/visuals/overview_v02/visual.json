@@ -3,9 +3,9 @@
   "name": "overview_v02",
   "position": {
     "x": 24,
-    "y": 92,
+    "y": 96,
     "z": 2000,
-    "height": 96,
+    "height": 112,
     "width": 233,
     "tabOrder": 2000
   },
@@ -32,6 +32,41 @@
           ]
         }
       }
+    },
+    "objects": {
+      "labels": [
+        {
+          "properties": {
+            "fontSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "28D"
+                }
+              }
+            },
+            "labelDisplayUnits": {
+              "expr": {
+                "Literal": {
+                  "Value": "1D"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "categoryLabels": [
+        {
+          "properties": {
+            "fontSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "12D"
+                }
+              }
+            }
+          }
+        }
+      ]
     },
     "drillFilterOtherVisuals": true
   }

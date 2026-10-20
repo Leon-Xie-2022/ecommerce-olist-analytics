@@ -3,9 +3,9 @@
   "name": "overview_v08",
   "position": {
     "x": 800,
-    "y": 204,
+    "y": 224,
     "z": 8000,
-    "height": 500,
+    "height": 480,
     "width": 456,
     "tabOrder": 8000
   },
@@ -69,6 +69,34 @@
         "isDefaultSort": false
       }
     },
+    "objects": {
+      "categoryAxis": [
+        {
+          "properties": {
+            "showAxisTitle": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "valueAxis": [
+        {
+          "properties": {
+            "showAxisTitle": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
     "visualContainerObjects": {
       "title": [
         {
@@ -83,7 +111,14 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'Product value by category'"
+                  "Value": "'Product value by category (BRL)'"
+                }
+              }
+            },
+            "fontSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "12D"
                 }
               }
             }

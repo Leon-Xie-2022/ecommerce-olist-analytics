@@ -3,9 +3,9 @@
   "name": "delivery_v05",
   "position": {
     "x": 960,
-    "y": 92,
+    "y": 96,
     "z": 5000,
-    "height": 96,
+    "height": 112,
     "width": 296,
     "tabOrder": 5000
   },
@@ -32,6 +32,34 @@
           ]
         }
       }
+    },
+    "objects": {
+      "labels": [
+        {
+          "properties": {
+            "fontSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "28D"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "categoryLabels": [
+        {
+          "properties": {
+            "fontSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "12D"
+                }
+              }
+            }
+          }
+        }
+      ]
     },
     "drillFilterOtherVisuals": true
   }

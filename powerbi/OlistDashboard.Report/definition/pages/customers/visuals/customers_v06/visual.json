@@ -3,9 +3,9 @@
   "name": "customers_v06",
   "position": {
     "x": 640,
-    "y": 204,
+    "y": 224,
     "z": 6000,
-    "height": 500,
+    "height": 480,
     "width": 616,
     "tabOrder": 6000
   },
@@ -27,7 +27,8 @@
                 }
               },
               "queryRef": "cohort_retention.cohort",
-              "nativeQueryRef": "cohort"
+              "nativeQueryRef": "cohort",
+              "displayName": "Cohort"
             },
             {
               "field": {
@@ -41,7 +42,8 @@
                 }
               },
               "queryRef": "cohort_retention.cohort_size",
-              "nativeQueryRef": "cohort_size"
+              "nativeQueryRef": "cohort_size",
+              "displayName": "Customers"
             },
             {
               "field": {
@@ -55,7 +57,8 @@
                 }
               },
               "queryRef": "cohort_retention.repeat_1m_pct",
-              "nativeQueryRef": "repeat_1m_pct"
+              "nativeQueryRef": "repeat_1m_pct",
+              "displayName": "1 month %"
             },
             {
               "field": {
@@ -69,7 +72,8 @@
                 }
               },
               "queryRef": "cohort_retention.repeat_3m_pct",
-              "nativeQueryRef": "repeat_3m_pct"
+              "nativeQueryRef": "repeat_3m_pct",
+              "displayName": "3 months %"
             },
             {
               "field": {
@@ -83,7 +87,8 @@
                 }
               },
               "queryRef": "cohort_retention.repeat_6m_pct",
-              "nativeQueryRef": "repeat_6m_pct"
+              "nativeQueryRef": "repeat_6m_pct",
+              "displayName": "6 months %"
             },
             {
               "field": {
@@ -97,7 +102,8 @@
                 }
               },
               "queryRef": "cohort_retention.repeat_12m_pct",
-              "nativeQueryRef": "repeat_12m_pct"
+              "nativeQueryRef": "repeat_12m_pct",
+              "displayName": "12 months %"
             }
           ]
         }
@@ -135,7 +141,14 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'Cohort repeat rate % (blank = not yet observable)'"
+                  "Value": "'Cohort repeat rate: % who bought again within N months (blank = not yet observable)'"
+                }
+              }
+            },
+            "fontSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "12D"
                 }
               }
             }

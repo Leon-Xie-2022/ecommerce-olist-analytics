@@ -3,9 +3,9 @@
   "name": "delivery_v07",
   "position": {
     "x": 24,
-    "y": 456,
+    "y": 472,
     "z": 7000,
-    "height": 248,
+    "height": 232,
     "width": 600,
     "tabOrder": 7000
   },
@@ -41,11 +41,11 @@
                       "Entity": "_Measures"
                     }
                   },
-                  "Property": "Avg Review Score"
+                  "Property": "Avg Review Score (Delivered)"
                 }
               },
-              "queryRef": "_Measures.Avg Review Score",
-              "nativeQueryRef": "Avg Review Score"
+              "queryRef": "_Measures.Avg Review Score (Delivered)",
+              "nativeQueryRef": "Avg Review Score (Delivered)"
             }
           ]
         }
@@ -69,6 +69,47 @@
         "isDefaultSort": false
       }
     },
+    "objects": {
+      "categoryAxis": [
+        {
+          "properties": {
+            "showAxisTitle": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "valueAxis": [
+        {
+          "properties": {
+            "showAxisTitle": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "labels": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
     "visualContainerObjects": {
       "title": [
         {
@@ -83,7 +124,14 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'Average review score by delivery outcome (association, not causation)'"
+                  "Value": "'Avg review score by delivery outcome (association, not causation)'"
+                }
+              }
+            },
+            "fontSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "12D"
                 }
               }
             }

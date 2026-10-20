@@ -3,10 +3,10 @@
   "name": "overview_v00",
   "position": {
     "x": 24,
-    "y": 12,
+    "y": 16,
     "z": 0,
-    "height": 70,
-    "width": 820,
+    "height": 64,
+    "width": 980,
     "tabOrder": 0
   },
   "visual": {

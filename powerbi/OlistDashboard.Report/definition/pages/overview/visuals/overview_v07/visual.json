@@ -3,9 +3,9 @@
   "name": "overview_v07",
   "position": {
     "x": 24,
-    "y": 204,
+    "y": 224,
     "z": 7000,
-    "height": 500,
+    "height": 480,
     "width": 760,
     "tabOrder": 7000
   },
@@ -69,6 +69,34 @@
         "isDefaultSort": false
       }
     },
+    "objects": {
+      "categoryAxis": [
+        {
+          "properties": {
+            "showAxisTitle": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "valueAxis": [
+        {
+          "properties": {
+            "showAxisTitle": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
     "visualContainerObjects": {
       "title": [
         {
@@ -83,7 +111,14 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'Product value by purchase month'"
+                  "Value": "'Product value by purchase month (BRL)'"
+                }
+              }
+            },
+            "fontSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "12D"
                 }
               }
             }

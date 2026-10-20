@@ -3,9 +3,9 @@
   "name": "customers_v05",
   "position": {
     "x": 24,
-    "y": 456,
+    "y": 472,
     "z": 5000,
-    "height": 248,
+    "height": 232,
     "width": 600,
     "tabOrder": 5000
   },
@@ -69,6 +69,47 @@
         "isDefaultSort": false
       }
     },
+    "objects": {
+      "categoryAxis": [
+        {
+          "properties": {
+            "showAxisTitle": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "valueAxis": [
+        {
+          "properties": {
+            "showAxisTitle": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "labels": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
     "visualContainerObjects": {
       "title": [
         {
@@ -84,6 +125,13 @@
               "expr": {
                 "Literal": {
                   "Value": "'Valid orders by main payment type'"
+                }
+              }
+            },
+            "fontSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "12D"
                 }
               }
             }

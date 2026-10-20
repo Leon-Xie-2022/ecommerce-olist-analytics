@@ -3,9 +3,9 @@
   "name": "delivery_v08",
   "position": {
     "x": 640,
-    "y": 204,
+    "y": 224,
     "z": 8000,
-    "height": 500,
+    "height": 480,
     "width": 616,
     "tabOrder": 8000
   },
@@ -69,6 +69,34 @@
         "isDefaultSort": false
       }
     },
+    "objects": {
+      "categoryAxis": [
+        {
+          "properties": {
+            "showAxisTitle": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "valueAxis": [
+        {
+          "properties": {
+            "showAxisTitle": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
     "visualContainerObjects": {
       "title": [
         {
@@ -84,6 +112,13 @@
               "expr": {
                 "Literal": {
                   "Value": "'Late rate by customer state'"
+                }
+              }
+            },
+            "fontSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "12D"
                 }
               }
             }
