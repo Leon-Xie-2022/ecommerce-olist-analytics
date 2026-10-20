@@ -1,0 +1,12 @@
+term,odds_ratio,ci_low,ci_high,p_value
+delivery: 1. 10+ days early,0.677,0.64,0.717,0.0
+delivery: 3. on estimated day,1.282,1.075,1.529,0.006
+delivery: 4. 1-3 days late,4.2,3.763,4.687,0.0
+delivery: 5. 4-7 days late,19.096,17.056,21.38,0.0
+delivery: 6. 8+ days late,32.58,29.321,36.201,0.0
+items: 2,2.777,2.586,2.982,0.0
+items: 3+,3.67,3.282,4.103,0.0
+promised_days,1.024,1.021,1.028,0.0
+multi_seller,3.633,3.197,4.127,0.0
+log_product_value,1.052,1.018,1.086,0.002
+freight_ratio,1.098,1.012,1.191,0.025

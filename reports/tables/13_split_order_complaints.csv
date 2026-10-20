@@ -1,0 +1,4 @@
+order_type,orders,late_pct,low_review_pct,low_reviews_with_text,missing_item_pct
+1. one item,86061,6.8,11.3,7047,20.5
+"2. several items, one seller",8241,5.8,23.6,1647,44.5
+3. several sellers,1258,1.0,47.1,504,56.3
