@@ -11,7 +11,9 @@ Usage:
     python src/weekly_report.py --as-of 2018-03-18 --set min_route_sample=50 --label CR-001
         (a labelled run goes to output/weekly/what_if/<label>/as_of=<date>/ and does not touch latest/)
 
-Exit codes: 0 published, 2 input check failed, 3 reconciliation failed, 4 output folder in use.
+Exit codes: 0 published, 2 configuration or input problem, 3 reconciliation failed, 4 output folder in use,
+5 unexpected data/database error. On any failure nothing is published: the period folder and latest/ are
+both kept at their previous version (or both rolled back), and the attempt is logged.
 """
 import argparse
 import csv
@@ -39,11 +41,14 @@ REQUIRED_COLUMNS = {
                "order_estimated_delivery_date"],
     "order_items": ["order_id", "order_item_id", "seller_id", "shipping_limit_date", "price",
                     "freight_value"],
-    "payments": ["order_id", "payment_value"],
+    "payments": ["order_id", "payment_sequential", "payment_value"],
     "customers": ["customer_id", "customer_state"],
     "sellers": ["seller_id", "seller_state"],
 }
+# An order may legitimately have several payment rows, so payments are unique per (order, sequence),
+# not per order. A batch loaded twice breaks these keys and stops the run before any money is summed.
 PRIMARY_KEYS = {"orders": ["order_id"], "order_items": ["order_id", "order_item_id"],
+                "payments": ["order_id", "payment_sequential"],
                 "customers": ["customer_id"], "sellers": ["seller_id"]}
 
 # Output tables (created by the SQL files) -> file name.
@@ -60,9 +65,16 @@ RUN_LOG_FIELDS = ["run_id", "started_at", "as_of_date", "label", "status", "exit
 
 
 class RunError(Exception):
-    def __init__(self, message, exit_code):
+    """A controlled failure. published=True only if a rollback could not restore the previous outputs."""
+
+    def __init__(self, message, exit_code, published=False):
         super().__init__(message)
         self.exit_code = exit_code
+        self.published = published
+
+
+class ConfigError(Exception):
+    pass
 
 
 def rel(path):
@@ -81,19 +93,39 @@ def sha256(path):
     return h.hexdigest()
 
 
-def load_config(path, overrides):
-    with open(path, "rb") as f:
-        cfg = tomllib.load(f)
+def load_config(path, overrides, as_of=None):
+    """Read the TOML config, apply --set overrides and check that the parameters make sense."""
+    try:
+        with open(path, "rb") as f:
+            cfg = tomllib.load(f)
+    except (OSError, tomllib.TOMLDecodeError) as e:
+        raise ConfigError(f"cannot read config {path}: {e}") from e
     for item in overrides:
-        key, _, value = item.partition("=")
-        if key not in cfg:
-            raise SystemExit(f"--set: unknown key {key!r} (keys: {', '.join(cfg)})")
+        key, sep, value = item.partition("=")
+        if not sep or key not in cfg:
+            raise ConfigError(f"--set {item!r}: expected KEY=VALUE with KEY one of {', '.join(cfg)}")
         cfg[key] = value
-    for key in INT_PARAMS:
-        cfg[key] = int(cfg[key])
-    cfg["as_of_date"] = date.fromisoformat(str(cfg["as_of_date"]))
-    if cfg["window_days"] < 1:
-        raise SystemExit("window_days must be >= 1")
+    if as_of:
+        cfg["as_of_date"] = as_of
+    try:
+        for key in INT_PARAMS:
+            cfg[key] = int(cfg[key])
+        cfg["as_of_date"] = date.fromisoformat(str(cfg["as_of_date"]))
+    except (KeyError, ValueError) as e:
+        raise ConfigError(f"invalid parameter: {e}") from e
+    rules = [
+        (cfg["window_days"] >= 1, "window_days must be >= 1"),
+        (cfg["min_route_sample"] >= 1, "min_route_sample must be >= 1"),
+        (cfg["max_overdue_days"] >= 1, "max_overdue_days must be >= 1"),
+        (cfg["p2_min_days_overdue"] >= 1, "p2_min_days_overdue must be >= 1"),
+        (cfg["p1_min_days_overdue"] > cfg["p2_min_days_overdue"],
+         "p1_min_days_overdue must be greater than p2_min_days_overdue"),
+        (cfg["p1_min_days_overdue"] <= cfg["max_overdue_days"],
+         "p1_min_days_overdue must not exceed max_overdue_days (P1 would always be empty)"),
+    ]
+    problems = [message for ok, message in rules if not ok]
+    if problems:
+        raise ConfigError("; ".join(problems))
     return cfg
 
 
@@ -105,8 +137,12 @@ def check_inputs(con, input_dir):
         if not path.exists():
             problems.append(f"missing input file: {path}")
             continue
-        found = {r[0] for r in con.execute(
-            "SELECT name FROM parquet_schema(?) WHERE name <> 'schema'", [path.as_posix()]).fetchall()}
+        try:
+            found = {r[0] for r in con.execute(
+                "SELECT name FROM parquet_schema(?) WHERE name <> 'schema'", [path.as_posix()]).fetchall()}
+        except duckdb.Error as e:
+            problems.append(f"{path.name}: not a readable Parquet file ({type(e).__name__})")
+            continue
         missing = [c for c in columns if c not in found]
         if missing:
             problems.append(f"{path.name}: missing column(s) {', '.join(missing)}")
@@ -117,7 +153,10 @@ def check_inputs(con, input_dir):
         raise RunError("; ".join(problems), 2)
     for table, key in PRIMARY_KEYS.items():
         cols = ", ".join(key)
-        dupes = con.execute(f"SELECT COUNT(*) - COUNT(DISTINCT ({cols})) FROM src_{table}").fetchone()[0]
+        try:
+            dupes = con.execute(f"SELECT COUNT(*) - COUNT(DISTINCT ({cols})) FROM src_{table}").fetchone()[0]
+        except duckdb.Error as e:
+            raise RunError(f"{table}.parquet: cannot be read ({type(e).__name__})", 2) from e
         if dupes:
             raise RunError(f"{table}: {dupes} duplicate key(s) on ({cols})", 2)
     return checksums
@@ -166,33 +205,57 @@ def append_run_log(log_path, row):
         writer.writerow(row)
 
 
-def replace_folder(staging, target):
-    """Swap a finished staging folder into place. If Windows refuses (a file or the folder is open in
-    another program), the previous folder is restored and RunError is raised."""
-    backup = target.with_name(target.name + ".old")
+def publish_folders(pairs):
+    """Swap finished staging folders into place as one unit: pairs = [(staging, target), ...].
+
+    Each target is renamed to <target>.old, then the staging folder takes its name. If Windows refuses any
+    rename (a file or the folder is open in another program), every swap already made is undone in reverse
+    order, so the period folder and latest/ can never end up on different runs. Raises RunError(4).
+    """
+    done = []  # (staging, target, backup or None) for the swaps completed so far
     try:
-        if backup.exists():
-            shutil.rmtree(backup)
-        if target.exists():
-            target.rename(backup)
-        try:
-            staging.rename(target)
-        except OSError:
+        for staging, target in pairs:
+            backup = target.with_name(target.name + ".old")
             if backup.exists():
-                backup.rename(target)
-            raise
+                shutil.rmtree(backup)
+            if target.exists():
+                target.rename(backup)
+            else:
+                backup = None
+            try:
+                staging.rename(target)
+            except OSError:
+                if backup is not None:
+                    backup.rename(target)
+                raise
+            done.append((staging, target, backup))
     except OSError as e:
-        raise RunError(f"could not replace {rel(target)} ({e.strerror}); close any program using it "
-                       "and run again", 4) from e
-    shutil.rmtree(backup, ignore_errors=True)
+        rollback_problems = []
+        for staging, target, backup in reversed(done):
+            try:
+                target.rename(staging)
+                if backup is not None:
+                    backup.rename(target)
+            except OSError as undo_error:
+                rollback_problems.append(f"{rel(target)} ({undo_error.strerror})")
+        where = rel(Path(e.filename)) if e.filename else "an output folder"
+        message = f"could not replace {where} ({e.strerror}); close any program using it and run again"
+        if rollback_problems:
+            message += "; ROLLBACK INCOMPLETE for " + ", ".join(rollback_problems)
+        raise RunError(message, 4, published=bool(rollback_problems)) from e
+    for _, _, backup in done:
+        if backup is not None:
+            shutil.rmtree(backup, ignore_errors=True)
 
 
 def run(args):
     started = time.perf_counter()
     started_at = datetime.now().astimezone().isoformat(timespec="seconds")
-    cfg = load_config(args.config, args.set)
-    if args.as_of:
-        cfg["as_of_date"] = date.fromisoformat(args.as_of)
+    try:
+        cfg = load_config(args.config, args.set, args.as_of)
+    except ConfigError as e:
+        print(f"FAILED (exit 2): configuration error: {e}\nNothing was run or published.", file=sys.stderr)
+        return 2
     as_of = cfg["as_of_date"]
     run_id = f"{as_of.isoformat()}_{datetime.now().strftime('%Y%m%dT%H%M%S')}"
 
@@ -210,6 +273,8 @@ def run(args):
                "published_latest": publish_latest}
 
     staging = output_root / f".staging_{run_id}"
+    latest_staging = output_root / f".staging_latest_{run_id}"
+    con = None
     try:
         con = duckdb.connect()
         checksums = check_inputs(con, input_dir)
@@ -219,7 +284,10 @@ def run(args):
                            f"({max_purchase.date()}); the data cannot describe that day", 2)
         if not mart_db.exists():
             raise RunError(f"missing mart database for reconciliation: {mart_db}", 2)
-        con.execute(f"ATTACH '{mart_db.as_posix()}' AS mart (READ_ONLY)")
+        try:
+            con.execute(f"ATTACH '{mart_db.as_posix()}' AS mart (READ_ONLY)")
+        except duckdb.Error as e:
+            raise RunError(f"mart database cannot be opened: {rel(mart_db)} ({type(e).__name__})", 2) from e
 
         tables = build_outputs(con, cfg)
         recon = tables["reconciliation"]
@@ -272,17 +340,15 @@ def run(args):
         }
         (staging / "run_manifest.json").write_text(json.dumps(manifest, indent=2), encoding="utf-8")
         con.close()
+        con = None
 
+        # Prepare everything first, then swap the period folder and latest/ together (all or nothing).
         target.parent.mkdir(parents=True, exist_ok=True)
-        replace_folder(staging, target)
+        pairs = [(staging, target)]
         if publish_latest:
-            latest_staging = output_root / f".staging_latest_{run_id}"
-            shutil.copytree(target, latest_staging)
-            try:
-                replace_folder(latest_staging, output_root / "latest")
-            except RunError as e:
-                shutil.rmtree(latest_staging, ignore_errors=True)
-                raise RunError(f"{rel(target)} was published but latest/ was not updated: {e}", 4) from e
+            shutil.copytree(staging, latest_staging)
+            pairs.append((latest_staging, output_root / "latest"))
+        publish_folders(pairs)
 
         seconds = round(time.perf_counter() - started, 2)
         append_run_log(output_root / "run_log.csv",
@@ -293,15 +359,27 @@ def run(args):
         for file_name, info in outputs.items():
             print(f"  {file_name:<22} {info['rows']:>5} rows")
         return 0
-    except RunError as e:
+    except (RunError, duckdb.Error, OSError) as e:
+        if not isinstance(e, RunError):
+            # Anything else that fails while reading data, running SQL or writing files is still a logged,
+            # controlled failure, not a traceback that leaves staging folders behind.
+            e = RunError(f"unexpected {type(e).__name__}: {str(e).splitlines()[0][:300]}", 5)
+        if con is not None:
+            con.close()
+            con = None
         shutil.rmtree(staging, ignore_errors=True)
+        shutil.rmtree(latest_staging, ignore_errors=True)
         seconds = round(time.perf_counter() - started, 2)
         append_run_log(output_root / "run_log.csv",
                        {**log_row, "status": "FAILED", "exit_code": e.exit_code, "seconds": seconds,
                         "message": str(e), "published_latest": False})
-        print(f"FAILED (exit {e.exit_code}): {e}\nNothing was published; previous outputs are unchanged.",
-              file=sys.stderr)
+        outcome = ("Outputs may be inconsistent; see the message above." if e.published
+                   else "Nothing was published; previous outputs are unchanged.")
+        print(f"FAILED (exit {e.exit_code}): {e}\n{outcome}", file=sys.stderr)
         return e.exit_code
+    finally:
+        if con is not None:
+            con.close()
 
 
 def main():

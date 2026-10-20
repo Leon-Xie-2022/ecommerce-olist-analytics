@@ -10,9 +10,17 @@ Checks
   4. Missing required column     -> exit 2, previous outputs unchanged.
   5. Duplicate primary key       -> exit 2, previous outputs unchanged.
   6. Output folder in use        -> exit 4, previous outputs unchanged.
-  7. Point-in-time: a snapshot of the inputs that physically removes everything dated after the cut-off
+  7. latest/ in use              -> exit 4, period folder AND latest/ both keep the previous run.
+  8. Duplicate payment row       -> exit 2 (key is order_id + payment_sequential).
+  9. Extra payment row on an order in the follow-up list, bought before the window
+                                 -> exit 3 (exceptions vs mart reconciliation).
+ 10. Unreadable (corrupt) input  -> exit 2, logged as FAILED, no staging folder left.
+ 11. Week with no deliveries     -> publishes; counts 0, late rate blank, all reconciliations PASS.
+ 12. Invalid parameters          -> exit 2 before anything runs.
+ 13. Point-in-time: a snapshot of the inputs that physically removes everything dated after the cut-off
      (and drops order_status) gives exactly the same outputs as the full data.
 """
+import csv
 import hashlib
 import shutil
 import subprocess
@@ -33,8 +41,8 @@ RESULTS_PATH = PROJECT_ROOT / "docs" / "weekly_ops" / "evidence" / "check_weekly
 AS_OF_1, AS_OF_2 = "2018-03-11", "2018-03-18"
 
 
-def run_report(out_dir, as_of, input_dir=None):
-    cmd = [PY, str(SCRIPT), "--as-of", as_of, "--output-dir", str(out_dir)]
+def run_report(out_dir, as_of, input_dir=None, extra=()):
+    cmd = [PY, str(SCRIPT), "--as-of", as_of, "--output-dir", str(out_dir), *extra]
     if input_dir:
         cmd += ["--input-dir", str(input_dir)]
     p = subprocess.run(cmd, capture_output=True, text=True, encoding="utf-8")
@@ -49,6 +57,17 @@ def folder_hashes(folder):
 
 def snapshot_all(out_dir):
     return {name: folder_hashes(out_dir / name) for name in [f"as_of={AS_OF_1}", f"as_of={AS_OF_2}", "latest"]}
+
+
+def manifests(out_dir):
+    """Raw bytes of each run manifest: they change on every publish (run ID), so equal = not republished."""
+    return {name: (out_dir / name / "run_manifest.json").read_bytes()
+            for name in [f"as_of={AS_OF_1}", f"as_of={AS_OF_2}", "latest"]}
+
+
+def leftovers(out_dir):
+    """Staging or backup folders left behind by a failed run."""
+    return sorted(p.name for p in out_dir.iterdir() if p.name.startswith(".staging") or p.name.endswith(".old"))
 
 
 def copy_inputs(dest):
@@ -167,7 +186,78 @@ def main():
                (code == 4 or (code == 0 and sys.platform != "win32")) and snapshot_all(out) == before,
                f"exit {code}; outputs unchanged; message: {msg}")
 
-        # 7. Point-in-time snapshot gives the same answer
+        # 7. latest/ in use: the period folder must not be published on its own
+        before_manifests = manifests(out)
+        handle = open(out / "latest" / "weekly_summary.csv", encoding="utf-8")
+        try:
+            code, msg = run_report(out, AS_OF_1)
+        finally:
+            handle.close()
+        record("latest/ in use rolls back both folders",
+               (code == 4 or (code == 0 and sys.platform != "win32"))
+               and snapshot_all(out) == before and manifests(out) == before_manifests and not leftovers(out),
+               f"exit {code}; as_of={AS_OF_1}/ and latest/ data files and manifests unchanged "
+               f"(latest/ still = {AS_OF_2}); no staging or .old folders left; message: {msg}")
+
+        listed = [r for r in csv.DictReader(open(out / f"as_of={AS_OF_2}" / "exceptions.csv", encoding="utf-8"))
+                  if r["purchase_date"] < r["window_start"] and float(r["payment_value"] or 0) > 0][0]
+        order_id = listed["order_id"]
+
+        # 8. Duplicate payment row (same order_id and payment_sequential)
+        bad = copy_inputs(tmp / "duplicate_payment")
+        rewrite_parquet(bad / "payments.parquet",
+                        "SELECT * FROM read_parquet({src}) UNION ALL "
+                        f"SELECT * FROM read_parquet({{src}}) WHERE order_id = '{order_id}'")
+        code, msg = run_report(out, AS_OF_2, bad)
+        record("Duplicate payment row fails safely", code == 2 and snapshot_all(out) == before,
+               f"exit {code}; listed order bought {listed['purchase_date']} (before the window); "
+               f"outputs unchanged; message: {msg}")
+
+        # 9. A new payment row with a fresh sequence number passes the key check but changes the money
+        bad = copy_inputs(tmp / "extra_payment")
+        rewrite_parquet(bad / "payments.parquet",
+                        "SELECT * FROM read_parquet({src}) UNION ALL "
+                        "SELECT * REPLACE (payment_sequential + 100 AS payment_sequential) "
+                        f"FROM read_parquet({{src}}) WHERE order_id = '{order_id}'")
+        code, msg = run_report(out, AS_OF_2, bad)
+        record("Changed payment of a listed order fails reconciliation", code == 3 and snapshot_all(out) == before,
+               f"exit {code}; payment_value {listed['payment_value']} would double; outputs unchanged; "
+               f"message: {msg}")
+
+        # 10. Corrupt input file
+        bad = copy_inputs(tmp / "corrupt_file")
+        (bad / "sellers.parquet").write_bytes(b"this is not a parquet file")
+        log_before = (out / "run_log.csv").read_text(encoding="utf-8").splitlines()
+        code, msg = run_report(out, AS_OF_2, bad)
+        log_after = (out / "run_log.csv").read_text(encoding="utf-8").splitlines()
+        logged = len(log_after) == len(log_before) + 1 and ",FAILED,2," in log_after[-1]
+        record("Corrupt input file fails safely and is logged",
+               code == 2 and logged and snapshot_all(out) == before and not leftovers(out),
+               f"exit {code}; one FAILED line added to run_log.csv; no staging folder; message: {msg}")
+
+        # 11. A week with no deliveries (first day of the data)
+        empty_out = tmp / "empty_week"
+        code, msg = run_report(empty_out, "2016-09-04", extra=["--no-latest"])
+        folder = empty_out / "as_of=2016-09-04"
+        ok = code == 0
+        if ok:
+            summary = {r["metric"]: r["value"] for r in csv.DictReader(open(folder / "weekly_summary.csv", encoding="utf-8"))}
+            recon = list(csv.DictReader(open(folder / "reconciliation.csv", encoding="utf-8")))
+            ok = (float(summary["Orders delivered"]) == 0 and summary["Late rate"] == ""
+                  and all(r["status"] == "PASS" for r in recon))
+        record("Week with no deliveries publishes", ok,
+               f"exit {code}; orders delivered 0, late rate blank (undefined), all reconciliations PASS")
+
+        # 12. Invalid parameters
+        codes = []
+        for setting in [["--set", "p1_min_days_overdue=2"], ["--set", "min_route_sample=0"],
+                        ["--set", "p2_min_days_overdue=-1"]]:
+            code, msg = run_report(out, AS_OF_2, extra=setting)
+            codes.append(code)
+        record("Invalid parameters are rejected", codes == [2, 2, 2] and snapshot_all(out) == before,
+               f"exit codes {codes} for p1 below p2, min_route_sample 0, negative p2; last message: {msg}")
+
+        # 13. Point-in-time snapshot gives the same answer
         for as_of in [AS_OF_1, AS_OF_2]:
             snap_dir = tmp / f"snapshot_{as_of}"
             n_full, n_snap = point_in_time_snapshot(snap_dir, as_of)

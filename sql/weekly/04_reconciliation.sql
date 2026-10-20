@@ -5,6 +5,9 @@
 -- is_delivered also requires order_status = 'delivered'; the weekly report does not read status (it is
 -- known only at extraction), so orders with a delivery date but a later status of 'canceled' are counted
 -- by the report and not by the mart. That gap is computed from the mart and shown as expected_difference.
+-- Checks 16-17 compare the follow-up list with the mart for the same order IDs. They cover orders bought
+-- before the window, which checks 1-4 do not, so a duplicated or changed input row for a listed order fails.
+-- Empty sets: sums are COALESCEd to 0 so that a week with no deliveries reconciles (0 = 0).
 
 CREATE OR REPLACE TEMP TABLE reconciliation AS
 WITH p AS (SELECT * FROM params),
@@ -31,8 +34,8 @@ s AS (
 ),
 
 mart_placed AS (
-    SELECT COUNT(*) AS orders, SUM(product_value) AS product_value,
-           SUM(freight_value) AS freight_value, SUM(payment_value) AS payment_value
+    SELECT COUNT(*) AS orders, COALESCE(SUM(product_value), 0) AS product_value,
+           COALESCE(SUM(freight_value), 0) AS freight_value, COALESCE(SUM(payment_value), 0) AS payment_value
     FROM mart.fct_orders, p
     WHERE purchase_date BETWEEN p.window_start AND p.as_of_date
 ),
@@ -48,25 +51,34 @@ mart_delivered AS (
 ),
 
 item_placed AS (
-    SELECT SUM(i.price) AS product_value, SUM(i.freight_value) AS freight_value
+    SELECT COALESCE(SUM(i.price), 0) AS product_value, COALESCE(SUM(i.freight_value), 0) AS freight_value
     FROM pit_items AS i
     JOIN pit_orders AS o USING (order_id)
     WHERE o.is_placed_in_window
 ),
 
 item_exceptions AS (
-    SELECT SUM(i.price) AS product_value
+    SELECT COALESCE(SUM(i.price), 0) AS product_value
     FROM pit_items AS i
     WHERE i.order_id IN (SELECT order_id FROM exceptions)
 ),
 
+mart_exceptions AS (
+    SELECT COALESCE(SUM(m.product_value), 0) AS product_value,
+           COALESCE(SUM(m.payment_value), 0) AS payment_value
+    FROM mart.fct_orders AS m
+    WHERE m.order_id IN (SELECT order_id FROM exceptions)
+),
+
 route AS (
-    SELECT SUM(delivered_orders) AS delivered, SUM(late_orders) AS late FROM route_diagnosis
+    SELECT COALESCE(SUM(delivered_orders), 0) AS delivered, COALESCE(SUM(late_orders), 0) AS late
+    FROM route_diagnosis
 ),
 
 exc AS (
     SELECT COUNT(*) AS n_rows, COUNT(DISTINCT order_id) AS n_orders,
-           COUNT(*) FILTER (WHERE exception_type = 'Overdue') AS overdue
+           COUNT(*) FILTER (WHERE exception_type = 'Overdue') AS overdue,
+           COALESCE(SUM(payment_value), 0) AS payment_value
     FROM exceptions
 ),
 
@@ -105,6 +117,12 @@ checks (check_order, check_name, source_a, value_a, source_b, value_b, expected_
     UNION ALL SELECT 15, 'Product value of exceptions: order grain vs item grain', 'weekly_summary',
            s.exc_product_value, 'pit_items (item rows)', i.product_value, 0, 'No join fan-out'
            FROM s, item_exceptions i
+    UNION ALL SELECT 16, 'Product value of exceptions: report vs mart', 'weekly_summary', s.exc_product_value,
+           'mart.fct_orders (same order IDs)', m.product_value, 0, 'Covers orders bought before the window'
+           FROM s, mart_exceptions m
+    UNION ALL SELECT 17, 'Payment value of exceptions: report vs mart', 'exceptions', e.payment_value,
+           'mart.fct_orders (same order IDs)', m.payment_value, 0, 'Catches duplicated or changed payment rows'
+           FROM exc e, mart_exceptions m
 )
 
 SELECT

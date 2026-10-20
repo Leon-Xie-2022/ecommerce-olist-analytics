@@ -5,16 +5,17 @@
 --   C. Open orders at the cut-off       purchased by the cut-off, no delivery known; split by due state
 --   D. Follow-up list                   counts of the exceptions table
 -- Money names follow the mart: product_value = item prices, freight_value, payment_value. None is revenue.
+-- Empty sets: counts and amounts are 0 (nothing happened); rates and medians stay NULL (undefined).
 
 CREATE OR REPLACE TEMP TABLE weekly_summary AS
 WITH placed AS (
     SELECT
         COUNT(*)                                AS orders,
         COUNT(*) FILTER (WHERE n_items > 0)     AS orders_with_items,
-        SUM(n_items)                            AS item_units,
-        SUM(product_value)                      AS product_value,
-        SUM(freight_value)                      AS freight_value,
-        SUM(payment_value)                      AS payment_value
+        COALESCE(SUM(n_items), 0)               AS item_units,
+        COALESCE(SUM(product_value), 0)         AS product_value,
+        COALESCE(SUM(freight_value), 0)         AS freight_value,
+        COALESCE(SUM(payment_value), 0)         AS payment_value
     FROM pit_orders
     WHERE is_placed_in_window
 ),
@@ -50,7 +51,7 @@ exc AS (
         COUNT(*) FILTER (WHERE priority = 'P2')             AS p2,
         COUNT(*) FILTER (WHERE priority = 'P3')             AS p3,
         COUNT(*) FILTER (WHERE priority = 'P4')             AS p4,
-        SUM(product_value)                                  AS product_value
+        COALESCE(SUM(product_value), 0)                     AS product_value
     FROM exceptions
 ),
 
