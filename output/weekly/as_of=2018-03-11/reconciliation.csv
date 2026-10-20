@@ -1,0 +1,16 @@
+check_order,check_name,source_a,value_a,source_b,value_b,difference,expected_difference,status,note,as_of_date,window_start,window_end
+1,Orders placed: report vs mart,weekly_summary,1643.0,mart.fct_orders (same purchase dates),1643.0,0.0,0.0,PASS,,2018-03-11,2018-03-05,2018-03-11
+2,Product value placed: report vs mart,weekly_summary,227721.12,mart.fct_orders,227721.12,0.0,0.0,PASS,BRL,2018-03-11,2018-03-05,2018-03-11
+3,Freight value placed: report vs mart,weekly_summary,41083.88,mart.fct_orders,41083.88,0.0,0.0,PASS,BRL,2018-03-11,2018-03-05,2018-03-11
+4,Payment value placed: report vs mart,weekly_summary,269508.58,mart.fct_orders,269508.58,0.0,0.0,PASS,BRL,2018-03-11,2018-03-05,2018-03-11
+5,Product value placed: order grain vs item grain,weekly_summary,227721.12,pit_items (item rows),227721.12,0.0,0.0,PASS,No join fan-out,2018-03-11,2018-03-05,2018-03-11
+6,Freight value placed: order grain vs item grain,weekly_summary,41083.88,pit_items (item rows),41083.88,0.0,0.0,PASS,No join fan-out,2018-03-11,2018-03-05,2018-03-11
+7,Orders delivered: report vs mart,weekly_summary,1567.0,mart.fct_orders is_delivered (same delivery dates),1567.0,0.0,0.0,PASS,Expected gap = orders with a delivery date whose extract status is not delivered,2018-03-11,2018-03-05,2018-03-11
+8,Late orders: report vs mart,weekly_summary,122.0,mart.fct_orders is_late,122.0,0.0,0.0,PASS,"Same status gap, late orders only",2018-03-11,2018-03-05,2018-03-11
+9,Orders delivered: summary vs route table,weekly_summary,1567.0,route_diagnosis (all rows),1567.0,0.0,0.0,PASS,Includes MULTI-ORIGIN row,2018-03-11,2018-03-05,2018-03-11
+10,Late orders: summary vs route table,weekly_summary,122.0,route_diagnosis (all rows),122.0,0.0,0.0,PASS,,2018-03-11,2018-03-05,2018-03-11
+11,Open orders = not yet due + overdue + stale,weekly_summary,6215.0,sum of the three open states,6215.0,0.0,0.0,PASS,,2018-03-11,2018-03-05,2018-03-11
+12,Overdue orders: summary vs exceptions,weekly_summary,356.0,exceptions (Overdue rows),356.0,0.0,0.0,PASS,Every listed overdue order matches one rule,2018-03-11,2018-03-05,2018-03-11
+13,Exceptions: one row per order,exceptions rows,466.0,distinct order_id,466.0,0.0,0.0,PASS,,2018-03-11,2018-03-05,2018-03-11
+14,Exceptions listed: summary vs table,weekly_summary,466.0,exceptions rows,466.0,0.0,0.0,PASS,,2018-03-11,2018-03-05,2018-03-11
+15,Product value of exceptions: order grain vs item grain,weekly_summary,67084.08,pit_items (item rows),67084.08,0.0,0.0,PASS,No join fan-out,2018-03-11,2018-03-05,2018-03-11

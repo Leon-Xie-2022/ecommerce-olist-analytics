@@ -1,0 +1,23 @@
+metric_order,section,metric,value,unit,definition,as_of_date,window_start,window_end
+1,A. Orders placed in window,Orders placed,1643.0,orders,Orders with purchase date in the window (any later status),2018-03-11,2018-03-05,2018-03-11
+2,A. Orders placed in window,Orders with items,1638.0,orders,Placed orders with at least one item row,2018-03-11,2018-03-05,2018-03-11
+3,A. Orders placed in window,Item units,1865.0,items,Item rows of placed orders,2018-03-11,2018-03-05,2018-03-11
+4,A. Orders placed in window,Product value,227721.12,BRL,Sum of item prices of placed orders,2018-03-11,2018-03-05,2018-03-11
+5,A. Orders placed in window,Freight value,41083.88,BRL,Sum of item freight of placed orders,2018-03-11,2018-03-05,2018-03-11
+6,A. Orders placed in window,Payment value,269508.58,BRL,Sum of payment rows of placed orders,2018-03-11,2018-03-05,2018-03-11
+7,B. Deliveries completed in window,Orders delivered,1567.0,orders,Orders with customer delivery date in the window,2018-03-11,2018-03-05,2018-03-11
+8,B. Deliveries completed in window,Late orders,122.0,orders,Delivered on a later calendar day than the estimated date,2018-03-11,2018-03-05,2018-03-11
+9,B. Deliveries completed in window,Late rate,0.0779,rate,Late orders / orders delivered,2018-03-11,2018-03-05,2018-03-11
+10,B. Deliveries completed in window,Median delivery days,14.0,days,Median days from purchase date to delivery date,2018-03-11,2018-03-05,2018-03-11
+11,B. Deliveries completed in window,Median days late (late orders),5.0,days,"Median days after the estimated date, late orders only",2018-03-11,2018-03-05,2018-03-11
+12,C. Open orders at cut-off,Open orders,6215.0,orders,"Purchased by the cut-off, no delivery recorded by the cut-off",2018-03-11,2018-03-05,2018-03-11
+13,C. Open orders at cut-off,Not yet due (outcome unknown),4002.0,orders,"Estimated date after the cut-off day; right-censored, not counted as on time",2018-03-11,2018-03-05,2018-03-11
+14,C. Open orders at cut-off,Overdue (listed),356.0,orders,Estimated date passed 1..max_overdue_days ago,2018-03-11,2018-03-05,2018-03-11
+15,C. Open orders at cut-off,"Overdue, became due this window",202.0,orders,Overdue orders whose estimated date falls in the window,2018-03-11,2018-03-05,2018-03-11
+16,C. Open orders at cut-off,Stale overdue (status unknown),1857.0,orders,Estimated date passed more than max_overdue_days ago; not listed,2018-03-11,2018-03-05,2018-03-11
+17,D. Follow-up list,Exceptions listed,466.0,orders,Rows in the exceptions table (overdue + early warnings),2018-03-11,2018-03-05,2018-03-11
+18,D. Follow-up list,P1 overdue,154.0,orders,days_overdue >= p1_min_days_overdue,2018-03-11,2018-03-05,2018-03-11
+19,D. Follow-up list,P2 overdue,145.0,orders,days_overdue >= p2_min_days_overdue,2018-03-11,2018-03-05,2018-03-11
+20,D. Follow-up list,P3 overdue,57.0,orders,Other overdue orders,2018-03-11,2018-03-05,2018-03-11
+21,D. Follow-up list,P4 early warnings,110.0,orders,"Not yet due, seller ship-by date passed, not handed to carrier",2018-03-11,2018-03-05,2018-03-11
+22,D. Follow-up list,Product value of listed orders,67084.08,BRL,Sum of item prices of exception orders,2018-03-11,2018-03-05,2018-03-11
