@@ -85,7 +85,7 @@ Definitions: [metric definitions](docs/metric_definitions.md) · [data dictionar
 ## Power BI dashboard
 
 Three pages: **Overview** (orders, product value, AOV, category mix), **Delivery & Reviews** (late rate by month
-and state, review score by delivery outcome) and **Customers** (returning-order share, cohort table, payment mix).
+and state, review score by delivery outcome, split orders) and **Customers** (returning-order share, cohort table, payment mix).
 The project uses the text-based PBIP format ([`powerbi/`](powerbi)), so the model, relationships and DAX can be
 reviewed in Git. Model details and DAX: [`docs/powerbi.md`](docs/powerbi.md).
 
